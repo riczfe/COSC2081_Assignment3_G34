@@ -26,6 +26,7 @@ public class Vehicle {
     }
 
     public boolean canMoveToPort(Port port) {
+		return false;
         // Check if the vehicle can successfully move to the given port with its current load
         // Implementation not shown
     }
