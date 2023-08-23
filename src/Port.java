@@ -10,6 +10,7 @@ public class Port {
     private boolean landingAbility;
     private List<Container> containers;
     private List<Vehicle> vehicles;
+    private List<Trip> tripHistory;
 
     public Port(String ID, String name, double latitude, double longitude, int storingCapacity, boolean landingAbility) {
         this.ID = ID;
@@ -20,6 +21,7 @@ public class Port {
         this.landingAbility = landingAbility;
         this.containers = new ArrayList<>();
         this.vehicles = new ArrayList<>();
+        this.tripHistory = new ArrayList<>();
     }
 
     public double calculateDistance(Port otherPort) {
@@ -50,5 +52,9 @@ public class Port {
 
     public List<Vehicle> getVehicles() {
         return vehicles;
+    }
+    
+    public List<Trip> getTripHistory() { 
+        return tripHistory; 
     }
 }

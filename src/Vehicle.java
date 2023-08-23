@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 public class Vehicle {
     private String ID;
     private String name;
@@ -5,6 +7,8 @@ public class Vehicle {
     private double carryingCapacity;
     private double fuelCapacity;
     private Port currentPort;
+    private int containerCount;
+    private HashMap<String, String> containerInfo;
 
     public Vehicle(String ID, String name, double currentFuel, double carryingCapacity, double fuelCapacity) {
         this.ID = ID;
