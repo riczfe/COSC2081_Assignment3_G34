@@ -19,18 +19,29 @@ public class Admin extends User {
     }
     
     public boolean canMoveToPort(Vehicle vehicle, Port port) {
-        // Check if the vehicle can successfully move to the given port based on its current load
-        // Implement your logic here
-        return true; // Replace with your actual implementation
+        // Implement logic to determine if a vehicle can successfully move to a port with its current load
+        // For example, you can check if the port has landing ability and if the vehicle's weight is within the port's capacity
+        return port.isLandingAbility() && vehicle.getWeight() <= port.getStoringCapacity();
     }
 
     public void refuelVehicle(Vehicle vehicle) {
-        // Refuel the given vehicle
-        // Implement your logic here
+        // Implement logic to refuel a vehicle
+        // For example, you can set the vehicle's weight to its maximum capacity
+        vehicle.setWeight(vehicle.getCapacity());
     }
 
-    public void performStatisticsOperations() {
-        // Perform various statistics operations
-        // Implement your logic here
+    public void performStatisticsOperations(Port port) {
+        // Implement various statistics operations on the given port
+        // For example, you can calculate the average distance of trips in the port's traffic history
+        double totalDistance = 0;
+        int tripCount = 0;
+        for (Trip trip : port.getTrafficHistory()) {
+            totalDistance += trip.getDistance();
+            tripCount++;
+        }
+        double averageDistance = totalDistance / tripCount;
+        System.out.println("Average distance of trips: " + averageDistance);
     }
+    
+    
 }

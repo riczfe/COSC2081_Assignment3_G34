@@ -179,18 +179,15 @@ public class Port {
     }
     
     public boolean canMoveToPort(Vehicle vehicle) {
-        // Check if the given vehicle can successfully move to this port based on its current load
-        // Implement your logic here
-        return true; // Replace with your actual implementation
+        // Implement logic to determine if a vehicle can successfully move to this port with its current load
+        // For example, you can check if the port has landing ability and if the vehicle's weight is within the port's capacity
+        return this.isLandingAbility() && vehicle.getWeight() <= this.getStoringCapacity();
     }
 
     public void refuelVehicle(Vehicle vehicle) {
-        // Refuel the given vehicle at this port
-        // Implement your logic here
+        // Implement logic to refuel a vehicle
+        // For example, you can set the vehicle's weight to its maximum capacity
+        vehicle.setWeight(vehicle.getCapacity());
     }
 
-    public void performStatisticsOperations() {
-        // Perform various statistics operations related to this port
-        // Implement your logic here
-    }
 }
