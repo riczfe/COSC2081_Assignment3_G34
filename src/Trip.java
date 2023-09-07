@@ -1,16 +1,26 @@
-import java.util.Date;mport java.util.Date;
 public class Trip {
-    private Vehicle vehicle;
-    private Port departurePort;
-    private Port arrivalPort;
-    private Date departureDate;
-    private Date arrivalDate;
-    private String tripStatus;
+    private String action;
+    private String sourcePortId;
+    private String destinationPortId;
+    private double distance;
+    private double duration;
 
-    public void CalculateFuelUsage(){}
-    public void CalculateContainerWeight(){}
-    public void ManagePorts(){}
-    public void ManageVehicles(){}
-    public void ManageContainers(){}
+    public Trip(String action, String sourcePortId, String destinationPortId, double distance, double duration) {
+        this.action = action;
+        this.sourcePortId = sourcePortId;
+        this.destinationPortId = destinationPortId;
+        this.distance = distance;
+        this.duration = duration;
+    }
 
+    // Getters and setters
+
+    @Override
+    public String toString() {
+        return "Action: " + action +
+                ", Source Port ID: " + sourcePortId +
+                ", Destination Port ID: " + destinationPortId +
+                ", Distance: " + distance +
+                ", Duration: " + duration;
+    }
 }

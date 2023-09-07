@@ -1,17 +1,34 @@
 public class Container {
-    private String ID;
+    private String id;
     private double weight;
-    private String type;
+    private String destinationPortId;
 
-    public Container(String ID, double weight, String type) {
-        this.ID = ID;
+    public Container(String id, double weight) {
+        this.id = id;
         this.weight = weight;
-        this.type = type;
     }
 
-    public double getFuelConsumption(Vehicle vehicle) {
-		return weight;
-        // Get the fuel consumption for the container based on the vehicle type
-        // Implementation not shown
+    public String getDestinationPortId() {
+        return destinationPortId;
+    }
+    
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+    
+    public void setDestinationPortId(String destinationPortId) {
+        this.destinationPortId = destinationPortId;
     }
 }

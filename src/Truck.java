@@ -1,8 +1,44 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Truck extends Vehicle {
-    public Truck(String ID, String name, double currentFuel, double carryingCapacity, double fuelCapacity) {
-        super(ID, name, currentFuel, carryingCapacity, fuelCapacity);
+    private int loadingCapacity;
+    private List<Container> containers;
+
+    public Truck(String registrationNumber, int capacity, int loadingCapacity, String id, double weight) {
+        super(registrationNumber, capacity, id, weight);
+        this.loadingCapacity = loadingCapacity;
+        this.containers = new ArrayList<>();
     }
-    
-    // Additional methods specific to Truck
-    // Implementation not shown
+
+
+    public int getLoadingCapacity() {
+        return loadingCapacity;
+    }
+
+    public void setLoadingCapacity(int loadingCapacity) {
+        this.loadingCapacity = loadingCapacity;
+    }
+
+    public List<Container> getContainers() {
+        return containers;
+    }
+
+    public void loadContainer(Container container) {
+        if (containers.size() < loadingCapacity) {
+            containers.add(container);
+            System.out.println("Container loaded onto the truck.");
+        } else {
+            System.out.println("Truck loading capacity reached. Cannot load more containers.");
+        }
+    }
+
+    public void unloadContainer(Container container) {
+        if (containers.contains(container)) {
+            containers.remove(container);
+            System.out.println("Container unloaded from the truck.");
+        } else {
+            System.out.println("Container not found on the truck.");
+        }
+    }
 }
