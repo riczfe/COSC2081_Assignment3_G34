@@ -1,25 +1,20 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Admin extends User {
-    public Admin(String username, String password, String role) {
-        super(username, password, role);
+    private List<PortManager> portManagers;
+
+    public Admin(String username, String password) {
+        super(username, password);
+        this.portManagers = new ArrayList<>();
     }
 
-    public void calculateFuelUsage() {
-        // Calculate fuel usage implementation
-        // Implementation not shown
+    // Additional methods and logic
+    public void addPortManager(PortManager portManager) {
+        portManagers.add(portManager);
     }
 
-    public void calculateContainerWeight() {
-        // Calculate container weight implementation
-        // Implementation not shown
-    }
-
-    public void listShipsInPort() {
-        // List ships in port implementation
-        // Implementation not shown
-    }
-
-    public void listTrips() {
-        // List trips implementation
-        // Implementation not shown
+    public void removePortManager(PortManager portManager) {
+        portManagers.remove(portManager);
     }
 }
