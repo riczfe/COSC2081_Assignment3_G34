@@ -177,4 +177,20 @@ public class Port {
             System.out.println(trip.toString());
         }
     }
+    
+    public boolean canMoveToPort(Vehicle vehicle) {
+        // Check if the given vehicle can successfully move to this port based on its current load
+        // Implement your logic here
+        return true; // Replace with your actual implementation
+    }
+
+    public void refuelVehicle(Vehicle vehicle) {
+        // Refuel the given vehicle at this port
+        // Implement your logic here
+    }
+
+    public void performStatisticsOperations() {
+        // Perform various statistics operations related to this port
+        // Implement your logic here
+    }
 }
