@@ -14,5 +14,18 @@ public class PortManagerSystem {
         // Unload containers from the ship and truck
         ship1.unloadContainer(container1);
         truck1.unloadContainer(container1);
+
+        // Determine if a vehicle can move to a port with its current load
+        Port port1 = new Port("PORT001", "Port 1", 0, 0, 1000, true);
+        Admin admin = new Admin("admin", "password");
+        boolean canMoveToPort = admin.canMoveToPort(ship1, port1);
+        System.out.println("Can ship move to port? " + canMoveToPort);
+
+        // Refuel a vehicle
+        admin.refuelVehicle(truck1);
+        System.out.println("Truck refueled. New weight: " + truck1.getWeight());
+
+        // Perform statistics operations on a port
+        admin.performStatisticsOperations(port1);
     }
 }

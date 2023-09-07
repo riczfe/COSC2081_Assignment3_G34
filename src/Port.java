@@ -177,4 +177,17 @@ public class Port {
             System.out.println(trip.toString());
         }
     }
+    
+    public boolean canMoveToPort(Vehicle vehicle) {
+        // Implement logic to determine if a vehicle can successfully move to this port with its current load
+        // For example, you can check if the port has landing ability and if the vehicle's weight is within the port's capacity
+        return this.isLandingAbility() && vehicle.getWeight() <= this.getStoringCapacity();
+    }
+
+    public void refuelVehicle(Vehicle vehicle) {
+        // Implement logic to refuel a vehicle
+        // For example, you can set the vehicle's weight to its maximum capacity
+        vehicle.setWeight(vehicle.getCapacity());
+    }
+
 }
