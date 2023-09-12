@@ -1,3 +1,7 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 public class User {
     private String username;
     private String password;
@@ -23,22 +27,33 @@ public class User {
         this.password = password;
     }
 
-    public void login() {
-        // Implement login logic here
-        // For example, you can check if the provided username and password match the stored credentials
-        if (isValidCredentials(username, password)) {
-            System.out.println("Login successful. Performing necessary actions...");
-            // Perform necessary actions after successful login
-        } else {
-            System.out.println("Invalid username or password. Login failed.");
-            // Handle the error condition appropriately
-        }
-    }
+    public boolean login() {
+        boolean loginSuccessful = false;
+        String username = this.username;
+        String password = this.password;
+        try (Scanner scanner = new Scanner(new File("./src/data/login.txt"))) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] credentials = line.split(";");
+                String storedUsername = credentials[0];
+                String storedPassword = credentials[1];
 
-    private boolean isValidCredentials(String username, String password) {
-        // Compare the provided username and password with the stored credentials
-        // Return true if they match, false otherwise
-        // You can implement your own logic here, such as checking against a database or predefined values
-        return username.equals("admin") && password.equals("password");
+                if (username.equals(storedUsername) && password.equals(storedPassword)) {
+                    System.out.println("Login successful!");
+                    loginSuccessful = true;
+                    break;
+                }
+            }
+
+            if (!loginSuccessful) {
+                System.out.println("Invalid username or password.");
+            }
+
+            return loginSuccessful;
+        } catch (FileNotFoundException e) {
+            System.out.println("The login file was not found.");
+            e.printStackTrace();
+            return false;
+        }
     }
 }
