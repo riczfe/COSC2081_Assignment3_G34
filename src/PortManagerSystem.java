@@ -27,5 +27,11 @@ public class PortManagerSystem {
 
         // Perform statistics operations on a port
         admin.performStatisticsOperations(port1);
+        
+        //Login function
+        User user = new User("username", "password");
+        User user2 = new User("false", "false");
+        user.login();
+        user2.login();
     }
 }
