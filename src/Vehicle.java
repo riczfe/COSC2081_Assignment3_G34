@@ -3,6 +3,9 @@ public abstract class Vehicle {
     private int capacity;
     private String id;
     private double weight;
+    //Fuel
+    private double fuelEfficiency;
+    private double currentFuel;
     
     private String destinationPortId;
     
@@ -52,7 +55,13 @@ public abstract class Vehicle {
     public void setWeight(double weight) {
         this.weight = weight;
     }
+    public double getFuelEfficiency() {
+        return fuelEfficiency;
+    }
 
+    public double getCurrentFuel() {
+        return currentFuel;
+    }
     public abstract void loadContainer(Container container);
 
     public abstract void unloadContainer(Container container);

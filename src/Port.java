@@ -13,6 +13,8 @@ public class Port {
     private List<Trip> trafficHistory;
     private List<Container> containerList;
     private List<Vehicle> vehicleList;
+    //Fuel consumption
+    private double fuelConsumption;
 
     public Port(String id, String name, double latitude, double longitude, int storingCapacity, boolean landingAbility) {
         this.id = id;
@@ -119,7 +121,15 @@ public class Port {
         this.vehicleList = vehicleList;
     }
 
-    
+    //Getters and Setters for fuelConsumption
+    public double getFuelConsumption() {
+        return fuelConsumption;
+    }
+
+    public void setFuelConsumption(double fuelConsumption) {
+        this.fuelConsumption = fuelConsumption;
+    }
+
     public double calculateDistance(Port otherPort) {
         // Calculate the distance between this port and the other port using their latitude and longitude
         double latDiff = Math.toRadians(otherPort.latitude - this.latitude);
@@ -188,6 +198,18 @@ public class Port {
         // Implement logic to refuel a vehicle
         // For example, you can set the vehicle's weight to its maximum capacity
         vehicle.setWeight(vehicle.getCapacity());
+    }
+    
+    //Method for fuelConsumption
+    public void calculateFuelConsumption(Vehicle vehicle, double distance) {
+        // Calculate the fuel consumption for the given vehicle and distance
+        double fuelConsumed = (distance / vehicle.getFuelEfficiency()) * vehicle.getCurrentFuel();
+        fuelConsumption += fuelConsumed;
+    }
+
+    public void updateFuelConsumption(Vehicle vehicle, double additionalFuelConsumed) {
+        // Update the fuel consumption for the given vehicle with the additional fuel consumed
+        fuelConsumption += additionalFuelConsumed;
     }
 
 }
