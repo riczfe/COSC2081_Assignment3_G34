@@ -42,6 +42,34 @@ public class Admin extends User {
         double averageDistance = totalDistance / tripCount;
         System.out.println("Average distance of trips: " + averageDistance);
     }
-    
-    
+    public void removePortManager(String username) {
+        PortManager portManagerToRemove = null;
+        
+        for (PortManager portManager : portManagers) {
+            if (portManager.getUsername().equals(username)) {
+                portManagerToRemove = portManager;
+                break; // Exit the loop once the PortManager is found
+            }
+        }
+
+        if (portManagerToRemove != null) {
+            portManagers.remove(portManagerToRemove);
+            System.out.println("Port Manager with username " + username + " removed successfully.");
+        } else {
+            System.out.println("Port Manager with username " + username + " not found.");
+        }
+    }
+
+    @Override
+    public boolean login() {
+        // Implement admin-specific login logic here
+        // For example, check if the user is an admin based on their username or password
+        if (getUsername().equals("admin") && getPassword().equals("admin123")) {
+            System.out.println("Admin login successful!");
+            return true;
+        } else {
+            System.out.println("Invalid username or password for admin.");
+            return false;
+        }
+    }
 }

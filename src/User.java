@@ -32,7 +32,7 @@ public class User {
 
         try {
             // Open and read the account.json file
-            reader = new BufferedReader(new FileReader("account.json"));
+            reader = new BufferedReader(new FileReader("/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/account.json"));
             StringBuilder jsonContent = new StringBuilder();
             String line;
 
@@ -44,6 +44,10 @@ public class User {
             String jsonString = jsonContent.toString();
             String storedUsername = extractValue(jsonString, "\"username\":");
             String storedPassword = extractValue(jsonString, "\"password\":");
+
+            // Print the values for debugging
+//            System.out.println("Stored Username: " + storedUsername);
+//            System.out.println("Stored Password: " + storedPassword);
 
             // Compare the provided username and password with the stored values
             if (username.equals(storedUsername) && password.equals(storedPassword)) {
@@ -67,6 +71,8 @@ public class User {
             }
         }
     }
+
+
 
     // Helper method to extract values from JSON strings
     private String extractValue(String jsonString, String key) {
