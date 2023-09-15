@@ -13,25 +13,25 @@ public class Port {
     private List<Trip> trafficHistory;
     private List<Container> containerList;
     private List<Vehicle> vehicleList;
-    //Fuel consumption
     private double fuelConsumption;
 
-    public Port(String id, String name, double latitude, double longitude, int storingCapacity, boolean landingAbility) {
-        this.id = id;
-        this.name = name;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.storingCapacity = storingCapacity;
-        this.landingAbility = landingAbility;
-        this.containerCount = 0;
-        this.vehicleCount = 0;
-        this.trafficHistory = new ArrayList<>();
-        this.containerList = new ArrayList<>();
-        this.vehicleList = new ArrayList<>();
-    }
+    public Port(String id, String name, double latitude, double longitude, int storingCapacity, boolean landingAbility,
+            int containerCount, int vehicleCount, double fuelConsumption) {
+    this.id = id;
+    this.name = name;
+    this.latitude = latitude;
+    this.longitude = longitude;
+    this.storingCapacity = storingCapacity;
+    this.landingAbility = landingAbility;
+    this.containerCount = containerCount;
+    this.vehicleCount = vehicleCount;
+    this.trafficHistory = new ArrayList<>();
+    this.containerList = new ArrayList<>();
+    this.vehicleList = new ArrayList<>();
+    this.fuelConsumption = fuelConsumption;
+}
 
-    // Getters and setters
-    // Getters
+    // Getters for id, name, latitude, longitude, storingCapacity, landingAbility
     public String getId() {
         return id;
     }
@@ -56,27 +56,7 @@ public class Port {
         return landingAbility;
     }
 
-    public int getContainerCount() {
-        return containerCount;
-    }
-
-    public int getVehicleCount() {
-        return vehicleCount;
-    }
-
-    public List<Trip> getTrafficHistory() {
-        return trafficHistory;
-    }
-
-    public List<Container> getContainerList() {
-        return containerList;
-    }
-
-    public List<Vehicle> getVehicleList() {
-        return vehicleList;
-    }
-
-    // Setters
+    // Setters for id, name, latitude, longitude, storingCapacity, landingAbility
     public void setId(String id) {
         this.id = id;
     }
@@ -101,6 +81,16 @@ public class Port {
         this.landingAbility = landingAbility;
     }
 
+    // Getters for containerCount, vehicleCount
+    public int getContainerCount() {
+        return containerCount;
+    }
+
+    public int getVehicleCount() {
+        return vehicleCount;
+    }
+
+    // Setters for containerCount, vehicleCount
     public void setContainerCount(int containerCount) {
         this.containerCount = containerCount;
     }
@@ -109,6 +99,20 @@ public class Port {
         this.vehicleCount = vehicleCount;
     }
 
+    // Getters for trafficHistory, containerList, vehicleList
+    public List<Trip> getTrafficHistory() {
+        return trafficHistory;
+    }
+
+    public List<Container> getContainerList() {
+        return containerList;
+    }
+
+    public List<Vehicle> getVehicleList() {
+        return vehicleList;
+    }
+
+    // Setters for trafficHistory, containerList, vehicleList
     public void setTrafficHistory(List<Trip> trafficHistory) {
         this.trafficHistory = trafficHistory;
     }
@@ -121,7 +125,7 @@ public class Port {
         this.vehicleList = vehicleList;
     }
 
-    //Getters and Setters for fuelConsumption
+    // Getters and Setters for fuelConsumption
     public double getFuelConsumption() {
         return fuelConsumption;
     }
@@ -130,6 +134,7 @@ public class Port {
         this.fuelConsumption = fuelConsumption;
     }
 
+    // Method to calculate distance between two ports
     public double calculateDistance(Port otherPort) {
         // Calculate the distance between this port and the other port using their latitude and longitude
         double latDiff = Math.toRadians(otherPort.latitude - this.latitude);

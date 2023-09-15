@@ -5,7 +5,7 @@ public class Admin extends User {
     private List<PortManager> portManagers;
 
     public Admin(String username, String password) {
-        super(username, password);
+        super(username, password, "admin");
         this.portManagers = new ArrayList<>();
     }
 

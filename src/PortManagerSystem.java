@@ -1,13 +1,15 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class PortManagerSystem {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        Port port = initializePortFromJson("/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/vehicle.json"); // Initialize the port with data from JSON
+        Port port = initializePortFromJson("/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/account.json");
 
         System.out.println("Welcome to the Port Management System!");
         System.out.print("Enter your username: ");
@@ -15,23 +17,84 @@ public class PortManagerSystem {
         System.out.print("Enter your password: ");
         String password = scanner.nextLine();
 
-        User user = new User(username, password);
-        Admin admin = new Admin(username, password);
+        User user = findUser(username, password, port);
 
-        if (user.login()) {
-            if (admin.login()) {
+        if (user != null) {
+            System.out.println("Debug: User role = " + user.getRole()); // Debug statement
+
+            if (user.getRole().equals("admin")) { // Update role comparison here
                 // User is an admin
+                Admin admin = new Admin(username, password);
                 displayAdminMenu(admin, port, scanner);
-            } else if (user instanceof PortManager) {
+            } else if (user.getRole().equals("portManager") || user.getUsername().startsWith("manager")) {
+                // User is a Port Manager
                 PortManager portManager = (PortManager) user;
                 displayPortManagerMenu(portManager, port, scanner);
             } else {
                 System.out.println("Invalid user type. Exiting.");
-                return;
             }
+        } else {
+            System.out.println("Invalid username or password.");
         }
 
         scanner.close();
+    }
+
+    private static User findUser(String username, String password, Port port) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/account.json"));
+            StringBuilder jsonContent = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                jsonContent.append(line);
+            }
+
+            String jsonString = jsonContent.toString();
+            int startIndex = jsonString.indexOf('{');
+            int endIndex = jsonString.lastIndexOf('}');
+
+            if (startIndex != -1 && endIndex != -1) {
+                String accountString = jsonString.substring(startIndex, endIndex + 1);
+
+                // Replace line breaks and whitespace to make parsing easier
+                accountString = accountString.replaceAll("\\s+", "");
+
+                // Split accounts based on "},{" separator
+                String[] accounts = accountString.split("\\},\\{");
+
+                for (String account : accounts) {
+                    String storedUsername = extractValue(account, "\"username\":\"");
+                    String storedPassword = extractValue(account, "\"password\":\"");
+                    String storedRole = extractValue(account, "\"role\":\"");
+
+                    if (username.equals(storedUsername) && password.equals(storedPassword)) {
+                        if ("admin".equals(storedRole)) {
+                            return new Admin(username, password);
+                        } else if ("portManager".equals(storedRole)) {
+                            String portId = extractValue(account, "\"portId\":\"");
+                            PortManager portManager = new PortManager(username, password, port);
+                            portManager.setPortId(portId);
+                            return portManager;
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading JSON file: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+
+    private static String extractValue(String jsonString, String key) {
+        int startIndex = jsonString.indexOf(key) + key.length();
+        int endIndex = jsonString.indexOf("\"", startIndex);
+        if (startIndex != -1 && endIndex != -1) {
+            return jsonString.substring(startIndex, endIndex);
+        }
+        return "";
     }
 
     private static void displayAdminMenu(Admin admin, Port port, Scanner scanner) {
@@ -52,7 +115,7 @@ public class PortManagerSystem {
                     String pmUsername = scanner.nextLine();
                     System.out.print("Enter Port Manager's password: ");
                     String pmPassword = scanner.nextLine();
-
+                    
                     // Create a new PortManager and add it to the admin's list
                     PortManager newPortManager = new PortManager(pmUsername, pmPassword, port);
                     admin.addPortManager(newPortManager);
@@ -124,32 +187,49 @@ public class PortManagerSystem {
                 jsonContent.append(line);
             }
 
-            // Manually parse the JSON content
             String jsonString = jsonContent.toString();
-            String id = extractValue(jsonString, "\"id\":");
-            String name = extractValue(jsonString, "\"name\":");
-            double latitude = Double.parseDouble(extractValue(jsonString, "\"latitude\":"));
-            double longitude = Double.parseDouble(extractValue(jsonString, "\"longitude\":"));
-            int storingCapacity = Integer.parseInt(extractValue(jsonString, "\"storingCapacity\":"));
-            boolean landingAbility = Boolean.parseBoolean(extractValue(jsonString, "\"landingAbility\":"));
 
-            // Create the Port object
-            Port port = new Port(id, name, latitude, longitude, storingCapacity, landingAbility);
-            return port;
+            // Find the index of the "ports" array
+            int portsIndex = jsonString.indexOf("\"ports\": [");
+            if (portsIndex != -1) {
+                // Find the start and end of the first port object within the "ports" array
+                int portStartIndex = jsonString.indexOf("{", portsIndex);
+                int portEndIndex = jsonString.indexOf("}", portStartIndex);
+
+                if (portStartIndex != -1 && portEndIndex != -1) {
+                    String portObject = jsonString.substring(portStartIndex, portEndIndex + 1);
+
+                    // Extract values manually
+                    String id = extractValue(portObject, "\"id\":\"");
+                    String name = extractValue(portObject, "\"name\":\"");
+                    double latitude = Double.parseDouble(extractValue(portObject, "\"latitude\":"));
+                    double longitude = Double.parseDouble(extractValue(portObject, "\"longitude\":"));
+                    int storingCapacity = Integer.parseInt(extractValue(portObject, "\"storingCapacity\":"));
+                    boolean landingAbility = Boolean.parseBoolean(extractValue(portObject, "\"landingAbility\":"));
+                    int containerCount = Integer.parseInt(extractValue(portObject, "\"containerCount\":"));
+                    int vehicleCount = Integer.parseInt(extractValue(portObject, "\"vehicleCount\":"));
+                    double fuelConsumption = Double.parseDouble(extractValue(portObject, "\"fuelConsumption\":"));
+
+                    // Create the Port object
+                    Port port = new Port(id, name, latitude, longitude, storingCapacity, landingAbility, containerCount, vehicleCount, fuelConsumption);
+                    return port;
+                }
+            }
         } catch (IOException e) {
             System.err.println("Error reading JSON file: " + e.getMessage());
-            return null;
         }
+
+        return null;
     }
 
-    private static String extractValue(String jsonString, String key) {
+    // Extract a value from a JSON string based on a key
+    private static String extractValue1(String jsonString, String key) {
         int startIndex = jsonString.indexOf(key) + key.length();
-        int endIndex = jsonString.indexOf(",", startIndex);
-
-        if (endIndex == -1) {
-            endIndex = jsonString.indexOf("}", startIndex);
+        int endIndex = jsonString.indexOf("\"", startIndex);
+        if (startIndex != -1 && endIndex != -1) {
+            return jsonString.substring(startIndex, endIndex);
         }
-
-        return jsonString.substring(startIndex, endIndex).trim().replace("\"", "");
+        return "";
     }
+
 }

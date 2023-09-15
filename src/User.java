@@ -1,14 +1,18 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class User {
     private String username;
     private String password;
+    private String role; // Add a role attribute
 
-    public User(String username, String password) {
+    public User(String username, String password, String role) {
         this.username = username;
         this.password = password;
+        this.role = role; // Initialize the role
     }
 
     public String getUsername() {
@@ -27,6 +31,11 @@ public class User {
         this.password = password;
     }
 
+    // Getter for the role
+    public String getRole() {
+        return role;
+    }
+
     public boolean login() {
         BufferedReader reader = null;
 
@@ -42,21 +51,24 @@ public class User {
 
             // Manually parse the JSON content
             String jsonString = jsonContent.toString();
-            String storedUsername = extractValue(jsonString, "\"username\":");
-            String storedPassword = extractValue(jsonString, "\"password\":");
+            Pattern pattern = Pattern.compile("\"username\":\"(.*?)\",\"password\":\"(.*?)\",\"role\":\"(.*?)\"");
+            Matcher matcher = pattern.matcher(jsonString);
 
-            // Print the values for debugging
-//            System.out.println("Stored Username: " + storedUsername);
-//            System.out.println("Stored Password: " + storedPassword);
+            while (matcher.find()) {
+                String storedUsername = matcher.group(1);
+                String storedPassword = matcher.group(2);
+                String storedRole = matcher.group(3);
 
-            // Compare the provided username and password with the stored values
-            if (username.equals(storedUsername) && password.equals(storedPassword)) {
-                System.out.println("Login successful!");
-                return true;
-            } else {
-                System.out.println("Invalid username or password.");
-                return false;
+                // Compare the provided username, password, and role with the stored values
+                if (username.equals(storedUsername) && password.equals(storedPassword) && role.equals(storedRole)) {
+                    System.out.println("Login successful!");
+                    return true;
+                }
             }
+
+            // If no matching account is found
+            System.out.println("Invalid username, password, or role.");
+            return false;
         } catch (IOException e) {
             System.out.println("Error reading JSON file: " + e.getMessage());
             e.printStackTrace();
@@ -70,19 +82,5 @@ public class User {
                 System.out.println("Error closing file: " + e.getMessage());
             }
         }
-    }
-
-
-
-    // Helper method to extract values from JSON strings
-    private String extractValue(String jsonString, String key) {
-        int startIndex = jsonString.indexOf(key) + key.length();
-        int endIndex = jsonString.indexOf(",", startIndex);
-
-        if (endIndex == -1) {
-            endIndex = jsonString.indexOf("}", startIndex);
-        }
-
-        return jsonString.substring(startIndex, endIndex).trim().replace("\"", "");
     }
 }
