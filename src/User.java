@@ -1,6 +1,6 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class User {
     private String username;
@@ -28,32 +28,55 @@ public class User {
     }
 
     public boolean login() {
-        boolean loginSuccessful = false;
-        String username = this.username;
-        String password = this.password;
-        try (Scanner scanner = new Scanner(new File("./src/data/login.txt"))) {
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                String[] credentials = line.split(";");
-                String storedUsername = credentials[0];
-                String storedPassword = credentials[1];
+        BufferedReader reader = null;
 
-                if (username.equals(storedUsername) && password.equals(storedPassword)) {
-                    System.out.println("Login successful!");
-                    loginSuccessful = true;
-                    break;
-                }
+        try {
+            // Open and read the account.json file
+            reader = new BufferedReader(new FileReader("account.json"));
+            StringBuilder jsonContent = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                jsonContent.append(line);
             }
 
-            if (!loginSuccessful) {
+            // Manually parse the JSON content
+            String jsonString = jsonContent.toString();
+            String storedUsername = extractValue(jsonString, "\"username\":");
+            String storedPassword = extractValue(jsonString, "\"password\":");
+
+            // Compare the provided username and password with the stored values
+            if (username.equals(storedUsername) && password.equals(storedPassword)) {
+                System.out.println("Login successful!");
+                return true;
+            } else {
                 System.out.println("Invalid username or password.");
+                return false;
             }
-
-            return loginSuccessful;
-        } catch (FileNotFoundException e) {
-            System.out.println("The login file was not found.");
+        } catch (IOException e) {
+            System.out.println("Error reading JSON file: " + e.getMessage());
             e.printStackTrace();
             return false;
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                System.out.println("Error closing file: " + e.getMessage());
+            }
         }
+    }
+
+    // Helper method to extract values from JSON strings
+    private String extractValue(String jsonString, String key) {
+        int startIndex = jsonString.indexOf(key) + key.length();
+        int endIndex = jsonString.indexOf(",", startIndex);
+
+        if (endIndex == -1) {
+            endIndex = jsonString.indexOf("}", startIndex);
+        }
+
+        return jsonString.substring(startIndex, endIndex).trim().replace("\"", "");
     }
 }

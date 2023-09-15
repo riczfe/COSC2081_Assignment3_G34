@@ -1,0 +1,18 @@
+{
+  "admin": {
+    "username": "admin",
+    "password": "admin123",
+    "portManagers": [
+      {
+        "username": "manager1",
+        "password": "manager123",
+        "portId": "PORT001"
+      },
+      {
+        "username": "manager2",
+        "password": "manager456",
+        "portId": "PORT002"
+      }
+    ]
+  }
+}
