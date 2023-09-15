@@ -1,45 +1,106 @@
+import java.util.Scanner;
+
 public class PortManagerSystem {
     public static void main(String[] args) {
-    	// Create instances of ships, trucks, and containers
-        Ship ship1 = new Ship("SHIP001", 100, 50, "SHIP001", 1000);
-        Truck truck1 = new Truck("TRUCK001", 20, 10, "TRUCK001", 500); // Set the initial fuel value for the truck
-        Container container1 = new Container("CONT001", 500);
-        Container container2 = new Container("CONT002", 700);
+        Scanner scanner = new Scanner(System.in);
+        Port port = initializePort(); // Initialize the port with data from JSON
 
-        // Load containers onto the ship and truck
-        ship1.loadContainer(container1);
-        ship1.loadContainer(container2);
-        truck1.loadContainer(container1);
+        System.out.println("Welcome to the Port Management System!");
+        System.out.print("Enter your username: ");
+        String username = scanner.nextLine();
+        System.out.print("Enter your password: ");
+        String password = scanner.nextLine();
 
-        // Unload containers from the ship and truck
-        ship1.unloadContainer(container1);
+        User user = new User(username, password);
+        if (user.login()) {
+            if (user instanceof Admin) {
+                Admin admin = (Admin) user;
+                displayAdminMenu(admin, port, scanner);
+            } else if (user instanceof PortManager) {
+                PortManager portManager = (PortManager) user;
+                displayPortManagerMenu(portManager, port, scanner);
+            }
+        } else {
+            System.out.println("Login failed. Exiting.");
+        }
 
-        // Display ship's current fuel and fuel efficiency
-        System.out.println("Ship current fuel: " + ship1.getCurrentFuel());
-        System.out.println("Ship fuel efficiency: " + ship1.getFuelEfficiency());
+        scanner.close();
+    }
 
-        // Display truck's current fuel and fuel efficiency
-        System.out.println("Truck current fuel: " + truck1.getCurrentFuel());
-        System.out.println("Truck fuel efficiency: " + truck1.getFuelEfficiency());
-       
-        
-        // Determine if a vehicle can move to a port with its current load
-        Port port1 = new Port("PORT001", "Port 1", 0, 0, 1000, true);
-        Admin admin = new Admin("admin", "password");
-        boolean canMoveToPort = admin.canMoveToPort(ship1, port1);
-        System.out.println("Can ship move to port? " + canMoveToPort);
+    private static Port initializePort() {
+        // Read port data from JSON and create a Port object
+        // You can use the Jackson library or a similar approach as in your previous code
+        // Initialize and return a Port object with the read data
+        return null; // Replace with actual initialization logic
+    }
 
-        // Refuel a vehicle
-        admin.refuelVehicle(truck1);
-        System.out.println("Truck refueled. New weight: " + truck1.getWeight());
+    private static void displayAdminMenu(Admin admin, Port port, Scanner scanner) {
+        boolean exit = false;
+        while (!exit) {
+            System.out.println("\nAdmin Menu:");
+            System.out.println("1. Add Port Manager");
+            System.out.println("2. Remove Port Manager");
+            System.out.println("3. Perform Statistics Operations");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
 
-        // Perform statistics operations on a port
-        admin.performStatisticsOperations(port1);
-        
-        //Login function
-        User user = new User("username", "password");
-        User user2 = new User("false", "false");
-        user.login();
-        user2.login();
+            switch (choice) {
+                case 1:
+                    // Implement logic to add a port manager
+                    break;
+                case 2:
+                    // Implement logic to remove a port manager
+                    break;
+                case 3:
+                    admin.performStatisticsOperations(port);
+                    break;
+                case 4:
+                    exit = true;
+                    System.out.println("Exiting.");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+                    break;
+            }
+        }
+    }
+
+    private static void displayPortManagerMenu(PortManager portManager, Port port, Scanner scanner) {
+        boolean exit = false;
+        while (!exit) {
+            System.out.println("\nPort Manager Menu:");
+            System.out.println("1. Add Container");
+            System.out.println("2. Remove Container");
+            System.out.println("3. Add Vehicle");
+            System.out.println("4. Remove Vehicle");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+
+            switch (choice) {
+                case 1:
+                    // Implement logic to add a container
+                    break;
+                case 2:
+                    // Implement logic to remove a container
+                    break;
+                case 3:
+                    // Implement logic to add a vehicle
+                    break;
+                case 4:
+                    // Implement logic to remove a vehicle
+                    break;
+                case 5:
+                    exit = true;
+                    System.out.println("Exiting.");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+                    break;
+            }
+        }
     }
 }
