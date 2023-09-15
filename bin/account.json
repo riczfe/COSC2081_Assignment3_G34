@@ -1,18 +1,33 @@
 {
-  "admin": {
-    "username": "admin",
-    "password": "admin123",
-    "portManagers": [
-      {
-        "username": "manager1",
-        "password": "manager123",
-        "portId": "PORT001"
-      },
-      {
-        "username": "manager2",
-        "password": "manager456",
-        "portId": "PORT002"
-      }
-    ]
-  }
+  "accounts": [
+    {
+      "username": "admin",
+      "password": "admin123",
+      "role": "admin"
+    },
+    {
+      "username": "manager1",
+      "password": "manager123",
+      "role": "portManager",
+      "portId": "PORT001"
+    },
+    {
+      "username": "manager2",
+      "password": "manager456",
+      "role": "portManager",
+      "portId": "PORT002"
+    },
+    {
+      "username": "manager3",
+      "password": "manager789",
+      "role": "portManager",
+      "portId": "PORT003"
+    },
+    {
+      "username": "portmanager",
+      "password": "portmanager123",
+      "role": "portManager",
+      "portId": "PORT004"
+    }
+  ]
 }

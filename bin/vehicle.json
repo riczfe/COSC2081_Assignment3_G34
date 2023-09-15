@@ -5,8 +5,8 @@
       "capacity": 200,
       "id": "VEH001",
       "weight": 150,
-      "fuelEfficiency": 10,
-      "currentFuel": 100,
+      "fuelEfficiency": 10.0,
+      "currentFuel": 100.0,
       "destinationPortId": "PORT001"
     },
     {
@@ -14,10 +14,10 @@
       "capacity": 300,
       "id": "VEH002",
       "weight": 250,
-      "fuelEfficiency": 8,
-      "currentFuel": 80,
+      "fuelEfficiency": 8.0,
+      "currentFuel": 80.0,
       "destinationPortId": "PORT002"
-    },
+    }
     // Add more vehicles here (up to 20)
   ],
   "ports": [
@@ -42,7 +42,7 @@
       "containerCount": 20,
       "vehicleCount": 8,
       "fuelConsumption": 200.0
-    },
+    }
     // Add more ports here (up to 5)
   ],
   "containers": [
@@ -55,7 +55,7 @@
       "id": "CONT002",
       "weight": 700,
       "destinationPortId": "PORT002"
-    },
+    }
     // Add more containers here (up to 30)
   ],
   "trips": [
@@ -72,8 +72,7 @@
       "destinationPortId": "PORT001",
       "distance": 600.0,
       "duration": 10.0
-    },
+    }
     // Add more trips here (up to 25)
   ]
 }
-
