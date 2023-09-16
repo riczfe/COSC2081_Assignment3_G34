@@ -12,7 +12,7 @@ public class PortManagerSystem {
         Port port = initializePortFromJson("/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/account.json");
 
         System.out.println("Welcome to the Port Management System!");
-        System.out.print("Enter  username: ");
+        System.out.print("Enter 1: ");
         String username = scanner.nextLine();
         System.out.print("Enter your password: ");
         String password = scanner.nextLine();
@@ -127,7 +127,7 @@ public class PortManagerSystem {
                     admin.removePortManager(pmUsernameToRemove);
                     break;
                 case 3:
-                    admin.performStatisticsOperations(port);
+                    admin.performStatisticsOperations();
                     break;
                 case 4:
                     System.out.println("Logging out...");
