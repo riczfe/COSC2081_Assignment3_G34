@@ -18,7 +18,6 @@
       "currentFuel": 80.0,
       "destinationPortId": "PORT002"
     }
-    // Add more vehicles here (up to 20)
   ],
   "ports": [
     {
@@ -43,7 +42,6 @@
       "vehicleCount": 8,
       "fuelConsumption": 200.0
     }
-    // Add more ports here (up to 5)
   ],
   "containers": [
     {
@@ -56,7 +54,6 @@
       "weight": 700,
       "destinationPortId": "PORT002"
     }
-    // Add more containers here (up to 30)
   ],
   "trips": [
     {
@@ -73,6 +70,5 @@
       "distance": 600.0,
       "duration": 10.0
     }
-    // Add more trips here (up to 25)
   ]
 }
