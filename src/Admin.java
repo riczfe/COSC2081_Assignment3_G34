@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,16 +35,34 @@ public class Admin extends User {
 
     public void performStatisticsOperations(Port port) {
         // Implement various statistics operations on the given port
-        // For example, you can calculate the average distance of trips in the port's traffic history
-        double totalDistance = 0;
-        int tripCount = 0;
-        for (Trip trip : port.getTrafficHistory()) {
-            totalDistance += trip.getDistance();
-            tripCount++;
-        }
-        double averageDistance = totalDistance / tripCount;
-        System.out.println("Average distance of trips: " + averageDistance);
+        // For example, you can read and display the contents of the vehicle.json file
+        readVehicleJsonFile("/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/vehicle.json");
     }
+    
+    
+
+    public void readVehicleJsonFile(String vehicleJsonFilePath) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(vehicleJsonFilePath));
+            StringBuilder jsonContent = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                jsonContent.append(line);
+            }
+
+            String jsonString = jsonContent.toString();
+
+            // You can parse and extract information from jsonString here
+            // For example, you can print the entire JSON content for now
+            System.out.println("Contents of vehicle.json:\n" + jsonString);
+
+            reader.close();
+        } catch (IOException e) {
+            System.err.println("Error reading vehicle.json file: " + e.getMessage());
+        }
+    }
+
     public void removePortManager(String username) {
         PortManager portManagerToRemove = null;
         
