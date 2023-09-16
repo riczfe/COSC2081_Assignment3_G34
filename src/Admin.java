@@ -33,11 +33,45 @@ public class Admin extends User {
         vehicle.setWeight(vehicle.getCapacity());
     }
 
-    public void performStatisticsOperations(Port port) {
-        // Implement various statistics operations on the given port
-        // For example, you can read and display the contents of the vehicle.json file
-        readVehicleJsonFile("/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/vehicle.json");
+    public void performStatisticsOperations() {
+        String vehicleJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/vehicle.json";
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(vehicleJsonFilePath));
+            StringBuilder jsonContent = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                jsonContent.append(line);
+            }
+
+            String jsonString = jsonContent.toString();
+
+            // Split the JSON string into individual records
+            String[] records = jsonString.split("\\},\\s*\\{");
+
+            // Process and display each record
+            for (String record : records) {
+                // Format and display the record
+                System.out.println("Record:");
+                String[] fields = record.split(",");
+                for (String field : fields) {
+                    String[] keyValue = field.split(":");
+                    if (keyValue.length == 2) {
+                        String key = keyValue[0].replaceAll("[\"{}]", "").trim();
+                        String value = keyValue[1].replaceAll("[\"{}]", "").trim();
+                        System.out.println(key + ": " + value);
+                    }
+                }
+                System.out.println();
+            }
+
+            reader.close();
+        } catch (IOException e) {
+            System.err.println("Error reading vehicle.json file: " + e.getMessage());
+        }
     }
+
     
     
 
