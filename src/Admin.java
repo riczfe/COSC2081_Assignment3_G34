@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,13 +14,63 @@ public class Admin extends User {
     }
 
     // Additional methods and logic
+
     public void addPortManager(PortManager portManager) {
         portManagers.add(portManager);
+
+        // Update the account.json file
+        updateAccountJsonFile(portManager);
+    }
+
+    private void updateAccountJsonFile(PortManager portManager) {
+        String accountJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/account.json";
+
+        try {
+            // Read the existing JSON content
+            BufferedReader reader = new BufferedReader(new FileReader(accountJsonFilePath));
+            StringBuilder jsonContent = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                jsonContent.append(line);
+            }
+
+            String jsonString = jsonContent.toString();
+
+            // Modify the JSON string to include the new Port Manager account
+            String newAccount = String.format("{\"username\":\"%s\",\"password\":\"%s\",\"role\":\"portManager\",\"portId\":\"%s\"}",
+                    portManager.getUsername(), portManager.getPassword(), portManager.getPortId());
+
+            // Find the position of the last ']' character in the JSON string
+            int lastIndex = jsonString.lastIndexOf("]");
+
+            if (lastIndex != -1) {
+                // Insert a comma before adding the new account if it's not the first account
+                if (lastIndex > 0) {
+                    jsonString = jsonString.substring(0, lastIndex) + "," + newAccount + jsonString.substring(lastIndex);
+                } else {
+                    jsonString = "[" + newAccount + "]";
+                }
+
+                // Write the updated JSON back to the file
+                FileWriter fileWriter = new FileWriter(accountJsonFilePath);
+                fileWriter.write(jsonString);
+                fileWriter.close();
+
+            } else {
+                System.err.println("Invalid JSON format in account.json");
+            }
+
+        } catch (IOException e) {
+            System.err.println("Error updating account.json file: " + e.getMessage());
+        }
     }
 
     public void removePortManager(PortManager portManager) {
         portManagers.remove(portManager);
     }
+    
+    
     
     public boolean canMoveToPort(Vehicle vehicle, Port port) {
         // Implement logic to determine if a vehicle can successfully move to a port with its current load
