@@ -3,9 +3,12 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.io.*;
 
 public class Admin extends User {
     private List<PortManager> portManagers;
@@ -108,7 +111,7 @@ public class Admin extends User {
     }
 
     
- //REMOVE/ADDING VEHICLES
+ ///ADDING VEHICLES
     public void addVehicle() {
         try {
             // Read the existing JSON content from the vehicle.json file
@@ -169,12 +172,86 @@ public class Admin extends User {
         }
     }
 
+//REMOVE VEHICLE
+    public void removeVehicle(String vehicleId) {
+        String vehicleJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/vehicle.json";
 
-    public void removeVehicle(Vehicle vehicle) {
-        // Implement logic to remove a vehicle from the vehicle.json file
-        updateVehicleJsonFile(vehicle, "remove");
+        try {
+            // Read the existing JSON content from the vehicle.json file
+            BufferedReader reader = new BufferedReader(new FileReader(vehicleJsonFilePath));
+            StringBuilder jsonContent = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                jsonContent.append(line);
+            }
+
+            String jsonString = jsonContent.toString();
+
+            // Parse the JSON string into a List of Maps
+            List<Map<String, String>> vehicles = new ArrayList<>();
+            String[] vehicleEntries = jsonString.split("\\},\\s*\\{");
+
+            for (String entry : vehicleEntries) {
+                entry = entry.replaceAll("[{}\"]", "");
+                String[] keyValuePairs = entry.split(",");
+                Map<String, String> vehicleData = new HashMap<>();
+
+                for (String pair : keyValuePairs) {
+                    String[] keyValue = pair.split(":");
+                    vehicleData.put(keyValue[0].trim(), keyValue[1].trim());
+                }
+
+                vehicles.add(vehicleData);
+            }
+
+            // Find and remove the vehicle with the specified ID
+            boolean removed = false;
+
+            Iterator<Map<String, String>> iterator = vehicles.iterator();
+            while (iterator.hasNext()) {
+                Map<String, String> vehicle = iterator.next();
+                if (vehicle.containsKey("id") && vehicle.get("id").equals(vehicleId)) {
+                    iterator.remove();
+                    removed = true;
+                    break;
+                }
+            }
+
+            if (removed) {
+                // Rebuild the JSON string
+                StringBuilder updatedJson = new StringBuilder();
+                updatedJson.append("[");
+                for (Map<String, String> vehicle : vehicles) {
+                    if (updatedJson.length() > 1) {
+                        updatedJson.append(",");
+                    }
+                    updatedJson.append("{");
+                    for (Map.Entry<String, String> entry : vehicle.entrySet()) {
+                        updatedJson.append("\"" + entry.getKey() + "\":\"" + entry.getValue() + "\",");
+                    }
+                    updatedJson.deleteCharAt(updatedJson.length() - 1); // Remove the trailing comma
+                    updatedJson.append("}");
+                }
+                updatedJson.append("]");
+
+                // Write the updated JSON back to the file
+                FileWriter fileWriter = new FileWriter(vehicleJsonFilePath);
+                fileWriter.write(updatedJson.toString());
+                fileWriter.close();
+
+                System.out.println("Vehicle with ID " + vehicleId + " and all related data removed successfully.");
+            } else {
+                System.out.println("Vehicle with ID " + vehicleId + " not found.");
+            }
+        } catch (IOException e) {
+            System.err.println("Error removing vehicle: " + e.getMessage());
+        }
     }
 
+
+
+//ADD PORT
     public void addPort(Port port) {
         // Implement logic to add a port to the account.json file
         updatePortJsonFile(port, "add");
