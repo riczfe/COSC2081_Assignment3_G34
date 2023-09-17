@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ public class PortManagerSystem {
         Port port = initializePortFromJson("/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/account.json");
 
         System.out.println("Welcome to the Port Management System!");
-        System.out.print("Enter user: ");
+        System.out.print("Enter 2: ");
         String username = scanner.nextLine();
         System.out.print("Enter your password: ");
         String password = scanner.nextLine();
@@ -64,15 +65,15 @@ public class PortManagerSystem {
                 String[] accounts = accountString.split("\\},\\{");
 
                 for (String account : accounts) {
-                    String storedUsername = extractValue(account, "\"username\":\"");
-                    String storedPassword = extractValue(account, "\"password\":\"");
-                    String storedRole = extractValue(account, "\"role\":\"");
+                    String storedUsername = extractValue1(account, "\"username\":\"");
+                    String storedPassword = extractValue1(account, "\"password\":\"");
+                    String storedRole = extractValue1(account, "\"role\":\"");
 
                     if (username.equals(storedUsername) && password.equals(storedPassword)) {
                         if ("admin".equals(storedRole)) {
                             return new Admin(username, password);
                         } else if ("portManager".equals(storedRole)) {
-                            String portId = extractValue(account, "\"portId\":\"");
+                            String portId = extractValue1(account, "\"portId\":\"");
                             PortManager portManager = new PortManager(username, password, port);
                             portManager.setPortId(portId);
                             return portManager;
@@ -87,8 +88,7 @@ public class PortManagerSystem {
         return null;
     }
 
-
-    private static String extractValue(String jsonString, String key) {
+    private static String extractValue1(String jsonString, String key) {
         int startIndex = jsonString.indexOf(key) + key.length();
         int endIndex = jsonString.indexOf("\"", startIndex);
         if (startIndex != -1 && endIndex != -1) {
@@ -102,8 +102,14 @@ public class PortManagerSystem {
             System.out.println("\nAdmin Menu:");
             System.out.println("1. Add Port Manager");
             System.out.println("2. Remove Port Manager");
-            System.out.println("3. View Port Statistics");
-            System.out.println("4. Log Out");
+            System.out.println("3. Add Vehicle");
+            System.out.println("4. Remove Vehicle");
+            System.out.println("5. Add Container");
+            System.out.println("6. Remove Container");
+            System.out.println("7. Add Port");
+            System.out.println("8. Remove Port");
+            System.out.println("9. View Port Statistics");
+            System.out.println("10. Log Out");
             System.out.print("Enter your choice: ");
 
             int choice = scanner.nextInt();
@@ -127,9 +133,27 @@ public class PortManagerSystem {
                     admin.removePortManager(pmUsernameToRemove);
                     break;
                 case 3:
-                    admin.performStatisticsOperations();
+                    // Implement logic to add a vehicle
                     break;
                 case 4:
+                    // Implement logic to remove a vehicle
+                    break;
+                case 5:
+                    // Implement logic to add a container
+                    break;
+                case 6:
+                    // Implement logic to remove a container
+                    break;
+                case 7:
+                    // Implement logic to add a port
+                    break;
+                case 8:
+                    // Implement logic to remove a port
+                    break;
+                case 9:
+                    admin.performStatisticsOperations();
+                    break;
+                case 10:
                     System.out.println("Logging out...");
                     return;
                 default:
@@ -137,6 +161,7 @@ public class PortManagerSystem {
             }
         }
     }
+
 
     private static void displayPortManagerMenu(PortManager portManager, Port port, Scanner scanner) {
         while (true) {
@@ -157,7 +182,9 @@ public class PortManagerSystem {
                     // Implement logic to add a container
                     break;
                 case 2:
-                    // Implement logic to remove a container
+                    System.out.print("Enter the ID of the Container to remove: ");
+                    String containerIdToRemove = scanner.nextLine();
+                    removeContainer(port, containerIdToRemove);
                     break;
                 case 3:
                     // Implement logic to add a vehicle
@@ -174,6 +201,25 @@ public class PortManagerSystem {
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
+        }
+    }
+
+    private static void removeContainer(Port port, String containerIdToRemove) {
+        List<Container> containers = port.getContainerList();
+        Container containerToRemove = null;
+
+        for (Container container : containers) {
+            if (container.getId().equals(containerIdToRemove)) {
+                containerToRemove = container;
+                break;
+            }
+        }
+
+        if (containerToRemove != null) {
+            containers.remove(containerToRemove);
+            System.out.println("Container with ID " + containerIdToRemove + " removed successfully.");
+        } else {
+            System.out.println("Container with ID " + containerIdToRemove + " not found.");
         }
     }
 
@@ -200,15 +246,15 @@ public class PortManagerSystem {
                     String portObject = jsonString.substring(portStartIndex, portEndIndex + 1);
 
                     // Extract values manually
-                    String id = extractValue(portObject, "\"id\":\"");
-                    String name = extractValue(portObject, "\"name\":\"");
-                    double latitude = Double.parseDouble(extractValue(portObject, "\"latitude\":"));
-                    double longitude = Double.parseDouble(extractValue(portObject, "\"longitude\":"));
-                    int storingCapacity = Integer.parseInt(extractValue(portObject, "\"storingCapacity\":"));
-                    boolean landingAbility = Boolean.parseBoolean(extractValue(portObject, "\"landingAbility\":"));
-                    int containerCount = Integer.parseInt(extractValue(portObject, "\"containerCount\":"));
-                    int vehicleCount = Integer.parseInt(extractValue(portObject, "\"vehicleCount\":"));
-                    double fuelConsumption = Double.parseDouble(extractValue(portObject, "\"fuelConsumption\":"));
+                    String id = extractValue1(portObject, "\"id\":\"");
+                    String name = extractValue1(portObject, "\"name\":\"");
+                    double latitude = Double.parseDouble(extractValue1(portObject, "\"latitude\":"));
+                    double longitude = Double.parseDouble(extractValue1(portObject, "\"longitude\":"));
+                    int storingCapacity = Integer.parseInt(extractValue1(portObject, "\"storingCapacity\":"));
+                    boolean landingAbility = Boolean.parseBoolean(extractValue1(portObject, "\"landingAbility\":"));
+                    int containerCount = Integer.parseInt(extractValue1(portObject, "\"containerCount\":"));
+                    int vehicleCount = Integer.parseInt(extractValue1(portObject, "\"vehicleCount\":"));
+                    double fuelConsumption = Double.parseDouble(extractValue1(portObject, "\"fuelConsumption\":"));
 
                     // Create the Port object
                     Port port = new Port(id, name, latitude, longitude, storingCapacity, landingAbility, containerCount, vehicleCount, fuelConsumption);
@@ -223,7 +269,7 @@ public class PortManagerSystem {
     }
 
     // Extract a value from a JSON string based on a key
-    private static String extractValue1(String jsonString, String key) {
+    private static String extractValue(String jsonString, String key) {
         int startIndex = jsonString.indexOf(key) + key.length();
         int endIndex = jsonString.indexOf("\"", startIndex);
         if (startIndex != -1 && endIndex != -1) {
@@ -231,5 +277,4 @@ public class PortManagerSystem {
         }
         return "";
     }
-
 }
