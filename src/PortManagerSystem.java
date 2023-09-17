@@ -133,7 +133,7 @@ public class PortManagerSystem {
                     admin.removePortManager(pmUsernameToRemove);
                     break;
                 case 3:
-                    // Implement logic to add a vehicle
+                	admin.addVehicle();
                     break;
                 case 4:
                     // Implement logic to remove a vehicle

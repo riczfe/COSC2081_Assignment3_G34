@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Scanner;
 
 public class Admin extends User {
     private List<PortManager> portManagers;
@@ -56,7 +57,7 @@ public class Admin extends User {
     }
 
 
-
+//ACCOUNT UPDAETE: COMPLETED
     private void updateAccountJsonFile(PortManager portManager, boolean addAccount) {
         String accountJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/account.json";
 
@@ -107,11 +108,67 @@ public class Admin extends User {
     }
 
     
-    //Remove adding vehicles
-    public void addVehicle(Vehicle vehicle) {
-        // Implement logic to add a vehicle to the vehicle.json file
-        updateVehicleJsonFile(vehicle, "add");
+ //REMOVE/ADDING VEHICLES
+    public void addVehicle() {
+        try {
+            // Read the existing JSON content from the vehicle.json file
+            BufferedReader reader = new BufferedReader(new FileReader("/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/vehicle.json"));
+            StringBuilder jsonContent = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                jsonContent.append(line);
+            }
+
+            String jsonString = jsonContent.toString();
+
+            // Construct the JSON object for the new vehicle
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("Enter registration number: ");
+            String registrationNumber = scanner.nextLine();
+            System.out.print("Enter capacity: ");
+            int capacity = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+            System.out.print("Enter vehicle ID: ");
+            String id = scanner.nextLine();
+            System.out.print("Enter weight: ");
+            double weight = scanner.nextDouble();
+            System.out.print("Enter fuel efficiency: ");
+            double fuelEfficiency = scanner.nextDouble();
+            System.out.print("Enter current fuel: ");
+            double currentFuel = scanner.nextDouble();
+            scanner.nextLine(); // Consume the newline character
+            System.out.print("Enter destination port ID: ");
+            String destinationPortId = scanner.nextLine();
+
+            String newVehicle = String.format("{\"registrationNumber\":\"%s\",\"capacity\":%d,\"id\":\"%s\",\"weight\":%.2f,\"fuelEfficiency\":%.2f,\"currentFuel\":%.2f,\"destinationPortId\":\"%s\"}",
+                    registrationNumber, capacity, id, weight, fuelEfficiency, currentFuel, destinationPortId);
+
+            // Find the position of the last ']' character in the JSON string
+            int lastIndex = jsonString.lastIndexOf("]");
+
+            if (lastIndex != -1) {
+                // Insert a comma before adding the new vehicle if it's not the first vehicle
+                if (lastIndex > 0) {
+                    jsonString = jsonString.substring(0, lastIndex) + "," + newVehicle + jsonString.substring(lastIndex);
+                } else {
+                    jsonString = "[" + newVehicle + "]";
+                }
+            } else {
+                System.err.println("Invalid JSON format in vehicle.json");
+            }
+
+            // Write the updated JSON back to the file
+            FileWriter fileWriter = new FileWriter("/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/vehicle.json");
+            fileWriter.write(jsonString);
+            fileWriter.close();
+
+            System.out.println("Vehicle added successfully.");
+        } catch (IOException e) {
+            System.err.println("Error adding vehicle: " + e.getMessage());
+        }
     }
+
 
     public void removeVehicle(Vehicle vehicle) {
         // Implement logic to remove a vehicle from the vehicle.json file
