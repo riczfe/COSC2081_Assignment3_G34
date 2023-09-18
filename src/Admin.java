@@ -3,6 +3,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -18,7 +19,7 @@ public class Admin extends User {
         this.portManagers = new ArrayList<>();
     }
 
-    // Additional methods and logic
+// Additional methods and logic
 
 //Add port manager
     public void addPortManager(PortManager portManager) {
@@ -28,7 +29,7 @@ public class Admin extends User {
         updateAccountJsonFile(portManager, true);
     }
     
-    // REMOVE PORT MANAGER
+// REMOVE PORT MANAGER
     public void removePortManager(String username) {
         String accountJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/account.json";
 
@@ -60,7 +61,7 @@ public class Admin extends User {
     }
 
 
-//ACCOUNT UPDAETE: COMPLETED
+//ACCOUNT UPDATE: COMPLETED
     private void updateAccountJsonFile(PortManager portManager, boolean addAccount) {
         String accountJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/account.json";
 
@@ -111,7 +112,7 @@ public class Admin extends User {
     }
 
     
- ///ADDING VEHICLES
+//ADDING VEHICLES
     public void addVehicle() {
         try {
             // Read the existing JSON content from the vehicle.json file
@@ -127,6 +128,8 @@ public class Admin extends User {
 
             // Construct the JSON object for the new vehicle
             Scanner scanner = new Scanner(System.in);
+            System.out.print("Enter vehicle type (truck or ship): ");
+            String vehicleType = scanner.nextLine();
             System.out.print("Enter registration number: ");
             String registrationNumber = scanner.nextLine();
             System.out.print("Enter capacity: ");
@@ -144,8 +147,8 @@ public class Admin extends User {
             System.out.print("Enter destination port ID: ");
             String destinationPortId = scanner.nextLine();
 
-            String newVehicle = String.format("{\"registrationNumber\":\"%s\",\"capacity\":%d,\"id\":\"%s\",\"weight\":%.2f,\"fuelEfficiency\":%.2f,\"currentFuel\":%.2f,\"destinationPortId\":\"%s\"}",
-                    registrationNumber, capacity, id, weight, fuelEfficiency, currentFuel, destinationPortId);
+            String newVehicle = String.format("{\"type\":\"%s\",\"registrationNumber\":\"%s\",\"capacity\":%d,\"id\":\"%s\",\"weight\":%.2f,\"fuelEfficiency\":%.2f,\"currentFuel\":%.2f,\"destinationPortId\":\"%s\"}",
+                    vehicleType, registrationNumber, capacity, id, weight, fuelEfficiency, currentFuel, destinationPortId);
 
             // Find the position of the last ']' character in the JSON string
             int lastIndex = jsonString.lastIndexOf("]");
@@ -171,6 +174,7 @@ public class Admin extends User {
             System.err.println("Error adding vehicle: " + e.getMessage());
         }
     }
+
 
 //REMOVE VEHICLE
     public void removeVehicle(String vehicleId) {
@@ -205,7 +209,7 @@ public class Admin extends User {
                 vehicles.add(vehicleData);
             }
 
-            // Find and remove the vehicle with the specified ID
+// Find and remove the vehicle with the specified ID
             boolean removed = false;
 
             Iterator<Map<String, String>> iterator = vehicles.iterator();
@@ -219,7 +223,7 @@ public class Admin extends User {
             }
 
             if (removed) {
-                // Rebuild the JSON string
+// Rebuild the JSON string
                 StringBuilder updatedJson = new StringBuilder();
                 updatedJson.append("[");
                 for (Map<String, String> vehicle : vehicles) {
@@ -251,26 +255,247 @@ public class Admin extends User {
 
 
 
-//ADD PORT
+// Add port manually
     public void addPort(Port port) {
-        // Implement logic to add a port to the account.json file
-        updatePortJsonFile(port, "add");
+        String portJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/port.json";
+
+        try {
+            // Read the existing JSON content
+            BufferedReader reader = new BufferedReader(new FileReader(portJsonFilePath));
+            StringBuilder jsonContent = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                jsonContent.append(line);
+            }
+
+            String jsonString = jsonContent.toString();
+
+            // Construct the JSON object for the new port
+            String newPort = String.format(
+                "{\"id\":\"%s\",\"name\":\"%s\",\"latitude\":%.4f,\"longitude\":%.4f,\"storingCapacity\":%d,\"landingAbility\":%b,\"containerCount\":%d,\"vehicleCount\":%d,\"fuelConsumption\":%.2f}",
+                port.getId(), port.getName(), port.getLatitude(), port.getLongitude(), port.getStoringCapacity(),
+                port.isLandingAbility(), port.getContainerCount(), port.getVehicleCount(), port.getFuelConsumption());
+
+            // Check if the JSON array is empty
+            boolean isEmpty = jsonString.trim().equals("[]");
+
+            if (isEmpty) {
+                jsonString = "[" + newPort + "]";
+            } else {
+                jsonString = jsonString.substring(0, jsonString.length() - 1) + "," + newPort + "]";
+            }
+
+            // Write the updated JSON back to the file
+            FileWriter fileWriter = new FileWriter(portJsonFilePath);
+            fileWriter.write(jsonString);
+            fileWriter.close();
+
+            System.out.println("Port added successfully.");
+        } catch (IOException e) {
+            System.err.println("Error adding port: " + e.getMessage());
+        }
     }
 
-    public void removePort(Port port) {
-        // Implement logic to remove a port from the account.json file
-        updatePortJsonFile(port, "remove");
+// Remove port manually
+    public void removePort(String portId) {
+        String portJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/port.json";
+
+        try {
+            // Read the existing JSON content
+            BufferedReader reader = new BufferedReader(new FileReader(portJsonFilePath));
+            StringBuilder jsonContent = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                jsonContent.append(line);
+            }
+
+            String jsonString = jsonContent.toString();
+
+            // Find the index of the port data in the JSON string
+            int startIndex = jsonString.indexOf("{\"id\":\"" + portId + "\"");
+            int endIndex = jsonString.indexOf("}", startIndex) + 1;
+
+            // Check if the port data was found
+            if (startIndex != -1 && endIndex != 0) {
+                // Remove the port data from the JSON string
+                jsonString = jsonString.substring(0, startIndex) + jsonString.substring(endIndex);
+
+                // Write the updated JSON back to the file
+                FileWriter fileWriter = new FileWriter(portJsonFilePath);
+                fileWriter.write(jsonString);
+                fileWriter.close();
+
+                System.out.println("Port with ID " + portId + " removed successfully.");
+            } else {
+                System.out.println("Port with ID " + portId + " not found.");
+            }
+        } catch (IOException e) {
+            System.err.println("Error removing port: " + e.getMessage());
+        }
     }
 
-    public void addContainer(Container container) {
-        // Implement logic to add a container to the vehicle.json file
-        updateContainerJsonFile(container, "add");
+    
+    public void addContainer() {
+        try {
+            // Read the existing JSON content from the container.json file
+            BufferedReader reader = new BufferedReader(new FileReader("/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/container.json"));
+            StringBuilder jsonContent = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                jsonContent.append(line);
+            }
+
+            String jsonString = jsonContent.toString();
+
+            // Construct the JSON array for the new container
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("Enter container type (Dry storage, Open top, Open side, Refrigerated, Liquid): ");
+            String type = scanner.nextLine();
+            System.out.print("Enter container weight (in kg): ");
+            int weight = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+
+            // Generate a unique ID for the container (you can use a more sophisticated method)
+            String id = generateUniqueContainerId(jsonString);
+
+            // Look up the fuel consumption values based on the container type
+            double shipFuelConsumption = 0.0;
+            double truckFuelConsumption = 0.0;
+
+            if ("Dry storage".equals(type)) {
+                shipFuelConsumption = 3.5;
+                truckFuelConsumption = 4.6;
+            } else if ("Open top".equals(type)) {
+                shipFuelConsumption = 2.8;
+                truckFuelConsumption = 3.2;
+            } else if ("Open side".equals(type)) {
+                shipFuelConsumption = 2.7;
+                truckFuelConsumption = 3.2;
+            } else if ("Refrigerated".equals(type)) {
+                shipFuelConsumption = 4.5;
+                truckFuelConsumption = 5.4;
+            } else if ("Liquid".equals(type)) {
+                shipFuelConsumption = 4.8;
+                truckFuelConsumption = 5.3;
+            }
+
+            // Calculate fuel consumption based on weight
+            double shipConsumption = weight * shipFuelConsumption;
+            double truckConsumption = weight * truckFuelConsumption;
+
+            // Construct the JSON object for the new container
+            String newContainer = String.format(
+                "{\"id\":\"%s\",\"type\":\"%s\",\"weight\":%d,\"fuelConsumption\":{\"Ship\":%.1f,\"Truck\":%.1f}}",
+                id, type, weight, shipConsumption, truckConsumption
+            );
+
+            // Find the position of the last ']' character in the JSON string
+            int lastIndex = jsonString.lastIndexOf("]");
+
+            if (lastIndex != -1) {
+                // Insert a comma before adding the new container if it's not the first container
+                if (lastIndex > 0) {
+                    jsonString = jsonString.substring(0, lastIndex) + "," + newContainer + jsonString.substring(lastIndex);
+                } else {
+                    jsonString = "[" + newContainer + "]";
+                }
+            } else {
+                System.err.println("Invalid JSON format in container.json");
+            }
+
+            // Write the updated JSON back to the file
+            FileWriter fileWriter = new FileWriter("/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/container.json");
+            fileWriter.write(jsonString);
+            fileWriter.close();
+
+            System.out.println("Container added successfully.");
+        } catch (IOException e) {
+            System.err.println("Error adding container: " + e.getMessage());
+        }
+    }
+ // Remove Container
+    public void removeContainer(String containerIdToRemove) {
+        try {
+            String jsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/container.json";
+
+            // Read the JSON data from the file
+            BufferedReader reader = new BufferedReader(new FileReader(jsonFilePath));
+            StringBuilder jsonContent = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonContent.append(line);
+            }
+            reader.close();
+
+            String jsonString = jsonContent.toString();
+
+            // Split the JSON string into individual containers
+            String[] containerStrings = jsonString.split("\\},\\s*\\{");
+
+            // Find the container with the specified ID
+            int indexToRemove = -1;
+            for (int i = 0; i < containerStrings.length; i++) {
+                if (containerStrings[i].contains("\"id\": \"" + containerIdToRemove + "\"")) {
+                    indexToRemove = i;
+                    break;
+                }
+            }
+
+            if (indexToRemove != -1) {
+                // Remove the container from the array of containers
+                ArrayList<String> updatedContainers = new ArrayList<>(Arrays.asList(containerStrings));
+                updatedContainers.remove(indexToRemove);
+
+                // Join the containers back into a JSON string
+                String updatedJson = String.join("},{", updatedContainers);
+
+                // Add square brackets to make it a valid JSON array
+                updatedJson = "[" + updatedJson + "]";
+
+                // Write the updated JSON back to the file
+                FileWriter fileWriter = new FileWriter(jsonFilePath);
+                fileWriter.write(updatedJson);
+                fileWriter.close();
+
+                System.out.println("Container with ID " + containerIdToRemove + " removed successfully.");
+            } else {
+                System.out.println("Container with ID " + containerIdToRemove + " not found.");
+            }
+        } catch (IOException e) {
+            System.err.println("Error removing container: " + e.getMessage());
+        }
     }
 
-    public void removeContainer(Container container) {
-        // Implement logic to remove a container from the vehicle.json file
-        updateContainerJsonFile(container, "remove");
+
+
+// Helper method to parse the JSON array into a list of container objects
+    private List<String> parseContainerJson(String jsonString) {
+        List<String> containers = new ArrayList<>();
+        int startIndex = jsonString.indexOf("[");
+        int endIndex = jsonString.lastIndexOf("]");
+        if (startIndex != -1 && endIndex != -1) {
+            String containerArray = jsonString.substring(startIndex + 1, endIndex);
+            String[] containerStrings = containerArray.split(",");
+            for (String containerString : containerStrings) {
+                containers.add(containerString.trim());
+            }
+        }
+        return containers;
     }
+ 
+//GENERATE CONTAINER id
+	    private String generateUniqueContainerId(String jsonString) {
+	        // Implement a method to generate a unique container ID
+	        // For example, you can find the highest existing ID and increment it
+	        // Here, we'll use a simple approach by counting the existing containers
+	        List<String> containers = parseContainerJson(jsonString);
+	        int containerCount = containers.size();
+	        return "c-" + String.format("%03d", containerCount + 1);
+	    }
+
 
     // Helper method to update the vehicle.json file
     private void updateVehicleJsonFile(Vehicle vehicle, String operation) {

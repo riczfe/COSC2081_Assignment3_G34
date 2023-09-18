@@ -13,7 +13,7 @@ public class PortManagerSystem {
         Port port = initializePortFromJson("/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/account.json");
 
         System.out.println("Welcome to the Port Management System!");
-        System.out.print("Enter a1: ");
+        System.out.print("Enter 2a1: ");
         String username = scanner.nextLine();
         System.out.print("Enter your password: ");
         String password = scanner.nextLine();
@@ -141,16 +141,48 @@ public class PortManagerSystem {
                     admin.removeVehicle(vehicleIdToRemove);
                     break;
                 case 5:
-                    // Implement logic to add a container
+                    admin.addContainer();
                     break;
                 case 6:
                     // Implement logic to remove a container
+                	System.out.print("Enter the ID of the Container to remove: ");
+                    String containerIdToRemove = scanner.nextLine();
+                    admin.removeContainer(containerIdToRemove);
                     break;
                 case 7:
-                    // Implement logic to add a port
+                    // Option to add a port
+                    System.out.print("Enter Port ID: ");
+                    String portId = scanner.nextLine();
+                    System.out.print("Enter Port Name: ");
+                    String portName = scanner.nextLine();
+                    System.out.print("Enter Latitude: ");
+                    double latitude = scanner.nextDouble();
+                    System.out.print("Enter Longitude: ");
+                    double longitude = scanner.nextDouble();
+                    System.out.print("Enter Storing Capacity: ");
+                    int storingCapacity = scanner.nextInt();
+                    System.out.print("Enter Landing Ability (true/false): ");
+                    boolean landingAbility = scanner.nextBoolean();
+                    System.out.print("Enter Container Count: ");
+                    int containerCount = scanner.nextInt();
+                    System.out.print("Enter Vehicle Count: ");
+                    int vehicleCount = scanner.nextInt();
+                    System.out.print("Enter Fuel Consumption: ");
+                    double fuelConsumption = scanner.nextDouble();
+                    // Create a new Port object and add it using the Admin's addPort method
+                    Port newPort = new Port(portId, portName, latitude, longitude, storingCapacity, landingAbility, containerCount, vehicleCount, fuelConsumption);
+                    admin.addPort(newPort);
+                    System.out.println("Port added successfully.");
                     break;
                 case 8:
-                    // Implement logic to remove a port
+                	System.out.print("Enter the ID of the Port to remove: ");
+                    String portIdToRemove = scanner.nextLine();
+                    
+                    // Assuming the method doesn't return a boolean
+                    admin.removePort(portIdToRemove);
+                    
+                    // Print a message indicating that the port removal was requested
+                    System.out.println("Port removal requested for ID " + portIdToRemove);
                     break;
                 case 9:
                     admin.performStatisticsOperations();
@@ -266,6 +298,7 @@ public class PortManagerSystem {
         } catch (IOException e) {
             System.err.println("Error reading JSON file: " + e.getMessage());
         }
+        
 
         return null;
     }
