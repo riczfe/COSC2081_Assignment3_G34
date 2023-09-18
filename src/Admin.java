@@ -271,11 +271,12 @@ public class Admin extends User {
 
             String jsonString = jsonContent.toString();
 
-            // Construct the JSON object for the new port
+            // Construct the JSON object for the new port, including fuelConsumptionPerKm
             String newPort = String.format(
-                "{\"id\":\"%s\",\"name\":\"%s\",\"latitude\":%.4f,\"longitude\":%.4f,\"storingCapacity\":%d,\"landingAbility\":%b,\"containerCount\":%d,\"vehicleCount\":%d,\"fuelConsumption\":%.2f}",
+                "{\"id\":\"%s\",\"name\":\"%s\",\"latitude\":%.4f,\"longitude\":%.4f,\"storingCapacity\":%d,\"landingAbility\":%b,\"containerCount\":%d,\"vehicleCount\":%d,\"fuelConsumptionPerKm\":{\"Ship\":%.2f,\"Truck\":%.2f}}",
                 port.getId(), port.getName(), port.getLatitude(), port.getLongitude(), port.getStoringCapacity(),
-                port.isLandingAbility(), port.getContainerCount(), port.getVehicleCount(), port.getFuelConsumption());
+                port.isLandingAbility(), port.getContainerCount(), port.getVehicleCount(),
+                port.getFuelConsumption(), port.getFuelConsumption());
 
             // Check if the JSON array is empty
             boolean isEmpty = jsonString.trim().equals("[]");
@@ -296,6 +297,7 @@ public class Admin extends User {
             System.err.println("Error adding port: " + e.getMessage());
         }
     }
+
 
 // Remove port manually
     public void removePort(String portId) {
@@ -336,7 +338,7 @@ public class Admin extends User {
         }
     }
 
-    
+ // Add Container
     public void addContainer() {
         try {
             // Read the existing JSON content from the container.json file
@@ -382,9 +384,9 @@ public class Admin extends User {
                 truckFuelConsumption = 5.3;
             }
 
-            // Calculate fuel consumption based on weight
-            double shipConsumption = weight * shipFuelConsumption;
-            double truckConsumption = weight * truckFuelConsumption;
+            // Calculate fuel consumption based on weight (convert weight to metric tons)
+            double shipConsumption = (weight / 1000.0) * shipFuelConsumption;
+            double truckConsumption = (weight / 1000.0) * truckFuelConsumption;
 
             // Construct the JSON object for the new container
             String newContainer = String.format(
@@ -416,6 +418,8 @@ public class Admin extends User {
             System.err.println("Error adding container: " + e.getMessage());
         }
     }
+
+
  // Remove Container
     public void removeContainer(String containerIdToRemove) {
         try {
