@@ -421,11 +421,12 @@ public class Admin extends User {
 
 
  // Remove Container
+    // Remove Container
     public void removeContainer(String containerIdToRemove) {
         try {
             String jsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/container.json";
 
-            // Read the JSON data from the file
+            // Read the JSON data from the file into a StringBuilder
             BufferedReader reader = new BufferedReader(new FileReader(jsonFilePath));
             StringBuilder jsonContent = new StringBuilder();
             String line;
@@ -436,37 +437,47 @@ public class Admin extends User {
 
             String jsonString = jsonContent.toString();
 
-            // Split the JSON string into individual containers
-            String[] containerStrings = jsonString.split("\\},\\s*\\{");
+            // Find the position of the last ']' character in the JSON string
+            int lastIndex = jsonString.lastIndexOf("]");
 
-            // Find the container with the specified ID
-            int indexToRemove = -1;
-            for (int i = 0; i < containerStrings.length; i++) {
-                if (containerStrings[i].contains("\"id\": \"" + containerIdToRemove + "\"")) {
-                    indexToRemove = i;
-                    break;
+            if (lastIndex != -1) {
+                // Remove the trailing ']' to work with the JSON array
+                jsonString = jsonString.substring(0, lastIndex);
+
+                // Split the JSON string into individual containers
+                String[] containerStrings = jsonString.split("\\},\\s*\\{");
+
+                // Find the container with the specified ID
+                int indexToRemove = -1;
+                for (int i = 0; i < containerStrings.length; i++) {
+                    if (containerStrings[i].contains("\"id\":\"" + containerIdToRemove + "\"")) {
+                        indexToRemove = i;
+                        break;
+                    }
                 }
-            }
 
-            if (indexToRemove != -1) {
-                // Remove the container from the array of containers
-                ArrayList<String> updatedContainers = new ArrayList<>(Arrays.asList(containerStrings));
-                updatedContainers.remove(indexToRemove);
+                if (indexToRemove != -1) {
+                    // Remove the container from the array of containers
+                    ArrayList<String> updatedContainers = new ArrayList<>(Arrays.asList(containerStrings));
+                    updatedContainers.remove(indexToRemove);
 
-                // Join the containers back into a JSON string
-                String updatedJson = String.join("},{", updatedContainers);
+                    // Join the containers back into a JSON string
+                    String updatedJson = String.join("},{", updatedContainers);
 
-                // Add square brackets to make it a valid JSON array
-                updatedJson = "[" + updatedJson + "]";
+                    // Add square brackets to make it a valid JSON array
+                    updatedJson = "[" + updatedJson + "]";
 
-                // Write the updated JSON back to the file
-                FileWriter fileWriter = new FileWriter(jsonFilePath);
-                fileWriter.write(updatedJson);
-                fileWriter.close();
+                    // Write the updated JSON back to the file
+                    FileWriter fileWriter = new FileWriter(jsonFilePath);
+                    fileWriter.write(updatedJson);
+                    fileWriter.close();
 
-                System.out.println("Container with ID " + containerIdToRemove + " removed successfully.");
+                    System.out.println("Container with ID " + containerIdToRemove + " removed successfully.");
+                } else {
+                    System.out.println("Container with ID " + containerIdToRemove + " not found.");
+                }
             } else {
-                System.out.println("Container with ID " + containerIdToRemove + " not found.");
+                System.err.println("Invalid JSON format in container.json");
             }
         } catch (IOException e) {
             System.err.println("Error removing container: " + e.getMessage());
