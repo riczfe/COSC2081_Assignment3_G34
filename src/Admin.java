@@ -18,7 +18,7 @@ public class Admin extends User {
         this.portManagers = new ArrayList<>();
     }
 
-    // Additional methods and logic
+// Additional methods and logic
 
 //Add port manager
     public void addPortManager(PortManager portManager) {
@@ -60,7 +60,7 @@ public class Admin extends User {
     }
 
 
-//ACCOUNT UPDAETE: COMPLETED
+//ACCOUNT UPDATE: COMPLETED
     private void updateAccountJsonFile(PortManager portManager, boolean addAccount) {
         String accountJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/account.json";
 
@@ -251,22 +251,94 @@ public class Admin extends User {
 
 
 
-//ADD PORT
+    // Add port manually
     public void addPort(Port port) {
-        // Implement logic to add a port to the account.json file
-        updatePortJsonFile(port, "add");
+        String portJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/port.json";
+
+        try {
+            // Read the existing JSON content
+            BufferedReader reader = new BufferedReader(new FileReader(portJsonFilePath));
+            StringBuilder jsonContent = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                jsonContent.append(line);
+            }
+
+            String jsonString = jsonContent.toString();
+
+            // Construct the JSON object for the new port
+            String newPort = String.format(
+                "{\"id\":\"%s\",\"name\":\"%s\",\"latitude\":%.4f,\"longitude\":%.4f,\"storingCapacity\":%d,\"landingAbility\":%b,\"containerCount\":%d,\"vehicleCount\":%d,\"fuelConsumption\":%.2f}",
+                port.getId(), port.getName(), port.getLatitude(), port.getLongitude(), port.getStoringCapacity(),
+                port.isLandingAbility(), port.getContainerCount(), port.getVehicleCount(), port.getFuelConsumption());
+
+            // Check if the JSON array is empty
+            boolean isEmpty = jsonString.trim().equals("[]");
+
+            if (isEmpty) {
+                jsonString = "[" + newPort + "]";
+            } else {
+                jsonString = jsonString.substring(0, jsonString.length() - 1) + "," + newPort + "]";
+            }
+
+            // Write the updated JSON back to the file
+            FileWriter fileWriter = new FileWriter(portJsonFilePath);
+            fileWriter.write(jsonString);
+            fileWriter.close();
+
+            System.out.println("Port added successfully.");
+        } catch (IOException e) {
+            System.err.println("Error adding port: " + e.getMessage());
+        }
     }
 
-    public void removePort(Port port) {
-        // Implement logic to remove a port from the account.json file
-        updatePortJsonFile(port, "remove");
+    // Remove port manually
+    public void removePort(String portId) {
+        String portJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/port.json";
+
+        try {
+            // Read the existing JSON content
+            BufferedReader reader = new BufferedReader(new FileReader(portJsonFilePath));
+            StringBuilder jsonContent = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                jsonContent.append(line);
+            }
+
+            String jsonString = jsonContent.toString();
+
+            // Find the index of the port data in the JSON string
+            int startIndex = jsonString.indexOf("{\"id\":\"" + portId + "\"");
+            int endIndex = jsonString.indexOf("}", startIndex) + 1;
+
+            // Check if the port data was found
+            if (startIndex != -1 && endIndex != 0) {
+                // Remove the port data from the JSON string
+                jsonString = jsonString.substring(0, startIndex) + jsonString.substring(endIndex);
+
+                // Write the updated JSON back to the file
+                FileWriter fileWriter = new FileWriter(portJsonFilePath);
+                fileWriter.write(jsonString);
+                fileWriter.close();
+
+                System.out.println("Port with ID " + portId + " removed successfully.");
+            } else {
+                System.out.println("Port with ID " + portId + " not found.");
+            }
+        } catch (IOException e) {
+            System.err.println("Error removing port: " + e.getMessage());
+        }
     }
 
+    
+ //Add Container
     public void addContainer(Container container) {
         // Implement logic to add a container to the vehicle.json file
         updateContainerJsonFile(container, "add");
     }
-
+//Remove Container
     public void removeContainer(Container container) {
         // Implement logic to remove a container from the vehicle.json file
         updateContainerJsonFile(container, "remove");
