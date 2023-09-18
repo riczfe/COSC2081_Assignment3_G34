@@ -13,7 +13,7 @@ public class PortManagerSystem {
         Port port = initializePortFromJson("/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/account.json");
 
         System.out.println("Welcome to the Port Management System!");
-        System.out.print("Enter a1: ");
+        System.out.print("Enter 2a1: ");
         String username = scanner.nextLine();
         System.out.print("Enter your password: ");
         String password = scanner.nextLine();
@@ -141,10 +141,13 @@ public class PortManagerSystem {
                     admin.removeVehicle(vehicleIdToRemove);
                     break;
                 case 5:
-                    // Implement logic to add a container
+                    admin.addContainer();
                     break;
                 case 6:
                     // Implement logic to remove a container
+                	System.out.print("Enter the ID of the Container to remove: ");
+                    String containerIdToRemove = scanner.nextLine();
+                    admin.removeContainer(containerIdToRemove);
                     break;
                 case 7:
                     // Option to add a port
