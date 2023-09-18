@@ -13,6 +13,7 @@ import java.io.*;
 
 public class Admin extends User {
     private List<PortManager> portManagers;
+    private List<Map<String, String>> containersToLoad = new ArrayList<>();
 
     public Admin(String username, String password) {
         super(username, password, "admin");
@@ -421,7 +422,6 @@ public class Admin extends User {
 
 
  // Remove Container
-    // Remove Container
     public void removeContainer(String containerIdToRemove) {
         try {
             String jsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/container.json";
@@ -720,8 +720,6 @@ public class Admin extends User {
         }
     }
 
-    
-    
 
     public void readVehicleJsonFile(String vehicleJsonFilePath) {
         try {
@@ -745,6 +743,248 @@ public class Admin extends User {
         }
     }
 
+    
+//LOAD OR UNLOAD CONTAINERS
+    // Load Containers onto a Vehicle
+    public void loadContainersToVehicle(String vehicleId, List<Container> containersToLoad) {
+        try {
+            String vehicleJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/vehicle.json";
+            String movingVehicleJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/movingVehicle.json";
+
+            String vehicleJson = readJsonFile(vehicleJsonFilePath);
+            String movingVehicleJson = readJsonFile(movingVehicleJsonFilePath);
+
+            List<Map<String, String>> vehicles = parseJsonArray(vehicleJson);
+            List<Map<String, String>> movingVehicles = parseJsonArray(movingVehicleJson);
+
+            Map<String, String> selectedVehicle = null;
+            for (Map<String, String> vehicle : vehicles) {
+                if (vehicle.containsKey("id") && vehicle.get("id").equals(vehicleId)) {
+                    selectedVehicle = vehicle;
+                    break;
+                }
+            }
+
+            if (selectedVehicle != null) {
+                int maxContainers = 5;
+                int currentContainers = movingVehicles.size();
+                int containersToAdd = Math.min(maxContainers - currentContainers, containersToLoad.size());
+
+                if (containersToAdd > 0) {
+                    List<Container> loadedContainers = containersToLoad.subList(0, containersToAdd);
+                    movingVehicles.addAll(serializeContainersToMap(selectedVehicle.get("id"), loadedContainers));
+
+                    containersToLoad.subList(0, containersToAdd).clear();
+
+                    double shipFuelConsumption = Double.parseDouble(selectedVehicle.get("fuelEfficiency"));
+                    double loadedContainersWeight = loadedContainers.stream()
+                            .mapToDouble(container -> container.getWeight() / 1000.0)
+                            .sum();
+                    double fuelConsumption = loadedContainersWeight * shipFuelConsumption;
+                    double currentFuel = Double.parseDouble(selectedVehicle.get("currentFuel"));
+                    selectedVehicle.put("currentFuel", String.valueOf(currentFuel - fuelConsumption));
+
+                    updateVehicleJson(vehicles, vehicleJsonFilePath);
+                    updateMovingVehicleJson(movingVehicles, movingVehicleJsonFilePath);
+
+                    System.out.println("Containers loaded onto the vehicle successfully.");
+                } else {
+                    System.out.println("The vehicle cannot accommodate more containers.");
+                }
+            } else {
+                System.out.println("Vehicle with ID " + vehicleId + " not found.");
+            }
+        } catch (IOException e) {
+            System.err.println("Error loading containers onto the vehicle: " + e.getMessage());
+        }
+    }
+
+    // Unload Containers from a Vehicle
+    public void unloadContainersFromVehicle(String vehicleId, List<Container> containersToUnload) {
+        try {
+            String vehicleJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/vehicle.json";
+            String movingVehicleJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/movingVehicle.json";
+
+            String vehicleJson = readJsonFile(vehicleJsonFilePath);
+            String movingVehicleJson = readJsonFile(movingVehicleJsonFilePath);
+
+            List<Map<String, String>> vehicles = parseJsonArray(vehicleJson);
+            List<Map<String, String>> movingVehicles = parseJsonArray(movingVehicleJson);
+
+            Map<String, String> selectedVehicle = null;
+            for (Map<String, String> vehicle : vehicles) {
+                if (vehicle.containsKey("id") && vehicle.get("id").equals(vehicleId)) {
+                    selectedVehicle = vehicle;
+                    break;
+                }
+            }
+
+            if (selectedVehicle != null) {
+                List<Map<String, String>> containersToUnloadMaps = serializeContainersToMap(vehicleId, containersToUnload);
+                movingVehicles.removeAll(containersToUnloadMaps);
+
+                updateVehicleJson(vehicles, vehicleJsonFilePath);
+                updateMovingVehicleJson(movingVehicles, movingVehicleJsonFilePath);
+
+                System.out.println("Containers unloaded from the vehicle successfully.");
+            } else {
+                System.out.println("Vehicle with ID " + vehicleId + " not found.");
+            }
+        } catch (IOException e) {
+            System.err.println("Error unloading containers from the vehicle: " + e.getMessage());
+        }
+    }
+
+    // Check if a Vehicle Can Move
+    
+    
+    // Helper method to get the count of containers loaded onto a vehicle
+    private int getLoadedContainerCount(String vehicleId, List<Map<String, String>> movingVehicles) {
+        int count = 0;
+        for (Map<String, String> movingVehicle : movingVehicles) {
+            if (movingVehicle.containsKey("vehicleId") && movingVehicle.get("vehicleId").equals(vehicleId)) {
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    public boolean canVehicleMove(String vehicleId, String destinationPortId) {
+        try {
+            String vehicleJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/vehicle.json";
+            String portJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/port.json";
+            String movingVehicleJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/movingVehicle.json";
+
+            String vehicleJson = readJsonFile(vehicleJsonFilePath);
+            String portJson = readJsonFile(portJsonFilePath);
+            String movingVehicleJson = readJsonFile(movingVehicleJsonFilePath);
+
+            List<Map<String, String>> vehicles = parseJsonArray(vehicleJson);
+            List<Map<String, String>> ports = parseJsonArray(portJson);
+            List<Map<String, String>> movingVehicles = parseJsonArray(movingVehicleJson);
+
+            Map<String, String> selectedVehicle = null;
+            for (Map<String, String> vehicle : vehicles) {
+                if (vehicle.containsKey("id") && vehicle.get("id").equals(vehicleId)) {
+                    selectedVehicle = vehicle;
+                    break;
+                }
+            }
+
+            Map<String, String> destinationPort = null;
+            for (Map<String, String> port : ports) {
+                if (port.containsKey("id") && port.get("id").equals(destinationPortId)) {
+                    destinationPort = port;
+                    break;
+                }
+            }
+
+            if (selectedVehicle != null && destinationPort != null) {
+                int currentContainers = getLoadedContainerCount(selectedVehicle.get("id"), movingVehicles);
+                int maxContainers = 5;
+
+                return currentContainers + containersToLoad.size() <= maxContainers;
+            } else {
+                System.out.println("Vehicle or destination port not found.");
+            }
+        } catch (IOException e) {
+            System.err.println("Error checking if the vehicle can move: " + e.getMessage());
+        }
+
+        return false;
+    }
+
+
+    // Store Container Loading in movingVehicle.json
+    public void storeContainerLoading(String vehicleId, List<Container> containersToLoad) {
+        try {
+            String movingVehicleJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/movingVehicle.json";
+            String movingVehicleJson = readJsonFile(movingVehicleJsonFilePath);
+            List<Map<String, String>> movingVehicles = parseJsonArray(movingVehicleJson);
+
+            movingVehicles.addAll(serializeContainersToMap(vehicleId, containersToLoad));
+
+            updateMovingVehicleJson(movingVehicles, movingVehicleJsonFilePath);
+
+            System.out.println("Container loading recorded successfully.");
+        } catch (IOException e) {
+            System.err.println("Error recording container loading: " + e.getMessage());
+        }
+    }
+
+    // Store Container Unloading in movingVehicle.json
+    public void storeContainerUnloading(String vehicleId, List<Container> containersToUnload) {
+        try {
+            String movingVehicleJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/movingVehicle.json";
+            String movingVehicleJson = readJsonFile(movingVehicleJsonFilePath);
+            List<Map<String, String>> movingVehicles = parseJsonArray(movingVehicleJson);
+
+            List<Map<String, String>> containersToUnloadMaps = serializeContainersToMap(vehicleId, containersToUnload);
+            movingVehicles.removeAll(containersToUnloadMaps);
+
+            updateMovingVehicleJson(movingVehicles, movingVehicleJsonFilePath);
+
+            System.out.println("Container unloading recorded successfully.");
+        } catch (IOException e) {
+            System.err.println("Error recording container unloading: " + e.getMessage());
+        }
+    }
+
+    // Other methods...
+
+    // Helper method to read JSON content from a file
+    private String readJsonFile(String filePath) throws IOException {
+        StringBuilder jsonContent = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonContent.append(line);
+            }
+        }
+        return jsonContent.toString();
+    }
+
+    // Helper method to parse a JSON array into a list of maps
+    private List<Map<String, String>> parseJsonArray(String jsonArray) {
+        // Implement JSON parsing logic here and return the list of maps.
+        // Example:
+        /*
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<Map<String, String>>>() {}.getType();
+        return gson.fromJson(jsonArray, listType);
+        */
+
+        // Replace the return statement with the actual implementation
+        return new ArrayList<>();
+    }
+
+    // Helper method to serialize containers to Map objects
+    private List<Map<String, String>> serializeContainersToMap(String vehicleId, List<Container> containers) {
+        List<Map<String, String>> containerMaps = new ArrayList<>();
+
+        for (Container container : containers) {
+            Map<String, String> containerMap = new HashMap<>();
+            containerMap.put("vehicleId", vehicleId);
+            containerMap.put("containerId", container.getId());
+            containerMaps.add(containerMap);
+        }
+
+        return containerMaps;
+    }
+
+    // Helper method to update vehicle.json file
+    private void updateVehicleJson(List<Map<String, String>> vehicles, String filePath) throws IOException {
+        // Implement logic to update the vehicle.json file with the modified list of vehicles
+        // Convert the list of vehicles back to JSON and write it to the file.
+    }
+
+    // Helper method to update movingVehicle.json file
+    private void updateMovingVehicleJson(List<Map<String, String>> movingVehicles, String filePath) throws IOException {
+        // Implement logic to update the movingVehicle.json file with the modified list of loaded containers
+        // Convert the list of loaded containers back to JSON and write it to the file.
+    }
+
+//OVERRIDES LOGIN 
     @Override
     public boolean login() {
         // Implement admin-specific login logic here
