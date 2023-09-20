@@ -211,7 +211,10 @@ public class Port {
         double fuelConsumed = (distance / vehicle.getFuelEfficiency()) * vehicle.getCurrentFuel();
         fuelConsumption += fuelConsumed;
     }
-
+    public double calculateTripFuelConsumption(Vehicle vehicle, double distance) {
+        // Calculate the fuel consumption for the given vehicle and distance
+        return distance* vehicle.getWeight() * 3.0;
+    }
     public void updateFuelConsumption(Vehicle vehicle, double additionalFuelConsumed) {
         // Update the fuel consumption for the given vehicle with the additional fuel consumed
         fuelConsumption += additionalFuelConsumed;

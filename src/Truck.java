@@ -27,6 +27,7 @@ public class Truck extends Vehicle {
     public void loadContainer(Container container) {
         if (containers.size() < loadingCapacity) {
             containers.add(container);
+            setWeight(getWeight() + container.getWeight());
             System.out.println("Container loaded onto the truck.");
         } else {
             System.out.println("Truck loading capacity reached. Cannot load more containers.");
@@ -36,8 +37,10 @@ public class Truck extends Vehicle {
     public void unloadContainer(Container container) {
         if (containers.contains(container)) {
             containers.remove(container);
+            setWeight(getWeight() - container.getWeight());
             System.out.println("Container unloaded from the truck.");
         } else {
+
             System.out.println("Container not found on the truck.");
         }
     }

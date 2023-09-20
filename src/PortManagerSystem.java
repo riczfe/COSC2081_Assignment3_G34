@@ -10,7 +10,7 @@ public class PortManagerSystem {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        Port port = initializePortFromJson("/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/account.json");
+        Port port = initializePortFromJson("./src/account.json");
 
         System.out.println("Welcome to the Port Management System!");
         System.out.print("Enter 2a1: ");
@@ -43,7 +43,7 @@ public class PortManagerSystem {
 
     private static User findUser(String username, String password, Port port) {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/account.json"));
+            BufferedReader reader = new BufferedReader(new FileReader("./src/account.json"));
             StringBuilder jsonContent = new StringBuilder();
             String line;
 

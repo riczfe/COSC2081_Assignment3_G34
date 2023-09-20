@@ -32,7 +32,7 @@ public class Admin extends User {
     
 // REMOVE PORT MANAGER
     public void removePortManager(String username) {
-        String accountJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/account.json";
+        String accountJsonFilePath = "./src/account.json";
 
         try {
             // Read the existing JSON content
@@ -64,7 +64,7 @@ public class Admin extends User {
 
 //ACCOUNT UPDATE: COMPLETED
     private void updateAccountJsonFile(PortManager portManager, boolean addAccount) {
-        String accountJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/account.json";
+        String accountJsonFilePath = "./src/account.json";
 
         try {
             // Read the existing JSON content
@@ -117,7 +117,7 @@ public class Admin extends User {
     public void addVehicle() {
         try {
             // Read the existing JSON content from the vehicle.json file
-            BufferedReader reader = new BufferedReader(new FileReader("/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/vehicle.json"));
+            BufferedReader reader = new BufferedReader(new FileReader("./src/vehicle.json"));
             StringBuilder jsonContent = new StringBuilder();
             String line;
 
@@ -166,7 +166,7 @@ public class Admin extends User {
             }
 
             // Write the updated JSON back to the file
-            FileWriter fileWriter = new FileWriter("/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/vehicle.json");
+            FileWriter fileWriter = new FileWriter("./src/vehicle.json");
             fileWriter.write(jsonString);
             fileWriter.close();
 
@@ -179,7 +179,7 @@ public class Admin extends User {
 
 //REMOVE VEHICLE
     public void removeVehicle(String vehicleId) {
-        String vehicleJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/vehicle.json";
+        String vehicleJsonFilePath = "../src/vehicle.json";
 
         try {
             // Read the existing JSON content from the vehicle.json file
@@ -258,7 +258,7 @@ public class Admin extends User {
 
 // Add port manually
     public void addPort(Port port) {
-        String portJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/port.json";
+        String portJsonFilePath = "./src/port.json";
 
         try {
             // Read the existing JSON content
@@ -302,7 +302,7 @@ public class Admin extends User {
 
 // Remove port manually
     public void removePort(String portId) {
-        String portJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/port.json";
+        String portJsonFilePath = "./src/port.json";
 
         try {
             // Read the existing JSON content
@@ -343,7 +343,7 @@ public class Admin extends User {
     public void addContainer() {
         try {
             // Read the existing JSON content from the container.json file
-            BufferedReader reader = new BufferedReader(new FileReader("/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/container.json"));
+            BufferedReader reader = new BufferedReader(new FileReader("./src/container.json"));
             StringBuilder jsonContent = new StringBuilder();
             String line;
 
@@ -410,7 +410,7 @@ public class Admin extends User {
             }
 
             // Write the updated JSON back to the file
-            FileWriter fileWriter = new FileWriter("/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/container.json");
+            FileWriter fileWriter = new FileWriter("./src/container.json");
             fileWriter.write(jsonString);
             fileWriter.close();
 
@@ -424,7 +424,7 @@ public class Admin extends User {
  // Remove Container
     public void removeContainer(String containerIdToRemove) {
         try {
-            String jsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/container.json";
+            String jsonFilePath = "./src/container.json";
 
             // Read the JSON data from the file into a StringBuilder
             BufferedReader reader = new BufferedReader(new FileReader(jsonFilePath));
@@ -514,7 +514,7 @@ public class Admin extends User {
 
     // Helper method to update the vehicle.json file
     private void updateVehicleJsonFile(Vehicle vehicle, String operation) {
-        String vehicleJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/vehicle.json";
+        String vehicleJsonFilePath = "./src/vehicle.json";
 
         try {
             // Read the existing JSON content
@@ -566,7 +566,7 @@ public class Admin extends User {
 
     // Helper method to update the account.json file
     private void updatePortJsonFile(Port port, String operation) {
-        String accountJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/account.json";
+        String accountJsonFilePath = "./src/account.json";
 
         try {
             // Read the existing JSON content
@@ -619,7 +619,7 @@ public class Admin extends User {
 
     // Helper method to update the vehicle.json file for Containers
     private void updateContainerJsonFile(Container container, String operation) {
-        String vehicleJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/vehicle.json";
+        String vehicleJsonFilePath = "./src/vehicle.json";
 
         try {
             // Read the existing JSON content
@@ -682,7 +682,7 @@ public class Admin extends User {
     }
 
     public void performStatisticsOperations() {
-        String vehicleJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/vehicle.json";
+        String vehicleJsonFilePath = "./src/vehicle.json";
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader(vehicleJsonFilePath));
@@ -748,8 +748,8 @@ public class Admin extends User {
     // Load Containers onto a Vehicle
     public void loadContainersToVehicle(String vehicleId, List<Container> containersToLoad) {
         try {
-            String vehicleJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/vehicle.json";
-            String movingVehicleJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/movingVehicle.json";
+            String vehicleJsonFilePath = "./src/vehicle.json";
+            String movingVehicleJsonFilePath = "./src/movingVehicle.json";
 
             String vehicleJson = readJsonFile(vehicleJsonFilePath);
             String movingVehicleJson = readJsonFile(movingVehicleJsonFilePath);
@@ -802,8 +802,8 @@ public class Admin extends User {
     // Unload Containers from a Vehicle
     public void unloadContainersFromVehicle(String vehicleId, List<Container> containersToUnload) {
         try {
-            String vehicleJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/vehicle.json";
-            String movingVehicleJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/movingVehicle.json";
+            String vehicleJsonFilePath = "./src/vehicle.json";
+            String movingVehicleJsonFilePath = "./src/movingVehicle.json";
 
             String vehicleJson = readJsonFile(vehicleJsonFilePath);
             String movingVehicleJson = readJsonFile(movingVehicleJsonFilePath);
@@ -851,9 +851,9 @@ public class Admin extends User {
     
     public boolean canVehicleMove(String vehicleId, String destinationPortId) {
         try {
-            String vehicleJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/vehicle.json";
-            String portJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/port.json";
-            String movingVehicleJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/movingVehicle.json";
+            String vehicleJsonFilePath = "./src/vehicle.json";
+            String portJsonFilePath = "./src/port.json";
+            String movingVehicleJsonFilePath = "./src/movingVehicle.json";
 
             String vehicleJson = readJsonFile(vehicleJsonFilePath);
             String portJson = readJsonFile(portJsonFilePath);
@@ -898,7 +898,7 @@ public class Admin extends User {
     // Store Container Loading in movingVehicle.json
     public void storeContainerLoading(String vehicleId, List<Container> containersToLoad) {
         try {
-            String movingVehicleJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/movingVehicle.json";
+            String movingVehicleJsonFilePath = "./src/movingVehicle.json";
             String movingVehicleJson = readJsonFile(movingVehicleJsonFilePath);
             List<Map<String, String>> movingVehicles = parseJsonArray(movingVehicleJson);
 
@@ -915,7 +915,7 @@ public class Admin extends User {
     // Store Container Unloading in movingVehicle.json
     public void storeContainerUnloading(String vehicleId, List<Container> containersToUnload) {
         try {
-            String movingVehicleJsonFilePath = "/Users/erictran/eclipse-workspace/COSC2081_Assignment3_G34/src/movingVehicle.json";
+            String movingVehicleJsonFilePath = "./src/movingVehicle.json";
             String movingVehicleJson = readJsonFile(movingVehicleJsonFilePath);
             List<Map<String, String>> movingVehicles = parseJsonArray(movingVehicleJson);
 
